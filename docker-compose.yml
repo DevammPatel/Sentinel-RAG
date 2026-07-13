@@ -1,0 +1,58 @@
+# Full local stack: API + pgvector + Arize Phoenix (tracing UI).
+# Swap the OTEL endpoint in .env to ship traces to LangSmith instead of Phoenix.
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_DB: ragsys
+      POSTGRES_USER: ragsys
+      POSTGRES_PASSWORD: ragsys
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ragsys"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  phoenix:
+    image: arizephoenix/phoenix:latest
+    ports:
+      - "6006:6006"   # UI + OTLP HTTP collector
+    environment:
+      - PHOENIX_WORKING_DIR=/data
+    volumes:
+      - phoenixdata:/data
+
+  api:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+      phoenix:
+        condition: service_started
+    environment:
+      PGHOST: db
+      PGPORT: 5432
+      PGDATABASE: ragsys
+      PGUSER: ragsys
+      PGPASSWORD: ragsys
+      TRACING_ENABLED: "true"
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://phoenix:6006/v1/traces
+      OTEL_SERVICE_NAME: agentic-rag
+      LLM_PROVIDER: ${LLM_PROVIDER:-anthropic}
+      EMBEDDINGS_PROVIDER: ${EMBEDDINGS_PROVIDER:-local}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data
+      - models:/models
+
+volumes:
+  pgdata:
+  phoenixdata:
+  models:

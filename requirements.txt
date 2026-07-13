@@ -1,0 +1,43 @@
+# --- Core orchestration ---
+pydantic>=2.6
+pydantic-settings>=2.2
+python-dotenv>=1.0
+
+# --- API ---
+fastapi>=0.110
+uvicorn[standard]>=0.29
+
+# --- LLM providers (provider-configurable) ---
+anthropic>=0.34
+openai>=1.30
+
+# --- Embeddings / reranking ---
+sentence-transformers>=2.7
+FlagEmbedding>=1.2          # BGE reranker (optional, falls back to sentence-transformers)
+
+# --- Retrieval / stores ---
+psycopg[binary]>=3.1
+pgvector>=0.2.5
+rank-bm25>=0.2.2
+
+# --- Ingestion ---
+pypdf>=4.2
+httpx>=0.27
+beautifulsoup4>=4.12
+tenacity>=8.2
+
+# --- Observability (OpenTelemetry / OpenInference) ---
+opentelemetry-sdk>=1.25
+opentelemetry-exporter-otlp>=1.25
+openinference-instrumentation>=0.1.14
+openinference-semantic-conventions>=0.1.9
+arize-phoenix-otel>=0.6          # convenience wrapper; OTLP works with LangSmith too
+
+# --- Evaluation ---
+ragas>=0.2.0
+datasets>=2.19
+pandas>=2.2
+
+# --- Dev / test ---
+pytest>=8.2
+pytest-asyncio>=0.23
