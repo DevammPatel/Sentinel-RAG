@@ -1,0 +1,2339 @@
+{
+  "generated_at": "2026-11-13T23:49:51+00:00",
+  "mode": "retrieval",
+  "dataset": "data/golden/qa.jsonl",
+  "embedding_model": "BAAI/bge-small-en-v1.5",
+  "reranker_model": "Xenova/ms-marco-MiniLM-L-6-v2",
+  "n_answerable": 50,
+  "n_total": 62,
+  "ablation": {
+    "bm25_only": {
+      "hit@1": 0.58,
+      "hit@5": 0.92,
+      "mrr": 0.707,
+      "latency_ms_mean": 2.6965,
+      "latency_ms_p95": 3.98,
+      "by_style": {
+        "direct": {
+          "n": 33,
+          "hit@1": 0.5758,
+          "hit@5": 0.9394
+        },
+        "identifier": {
+          "n": 6,
+          "hit@1": 1.0,
+          "hit@5": 1.0
+        },
+        "paraphrase": {
+          "n": 11,
+          "hit@1": 0.3636,
+          "hit@5": 0.8182
+        }
+      }
+    },
+    "dense_only": {
+      "hit@1": 0.62,
+      "hit@5": 0.86,
+      "mrr": 0.715,
+      "latency_ms_mean": 9.4311,
+      "latency_ms_p95": 19.17,
+      "by_style": {
+        "direct": {
+          "n": 33,
+          "hit@1": 0.697,
+          "hit@5": 0.9091
+        },
+        "identifier": {
+          "n": 6,
+          "hit@1": 0.1667,
+          "hit@5": 0.3333
+        },
+        "paraphrase": {
+          "n": 11,
+          "hit@1": 0.6364,
+          "hit@5": 1.0
+        }
+      }
+    },
+    "hybrid_rrf": {
+      "hit@1": 0.62,
+      "hit@5": 0.82,
+      "mrr": 0.7033,
+      "latency_ms_mean": 14.1223,
+      "latency_ms_p95": 21.41,
+      "by_style": {
+        "direct": {
+          "n": 33,
+          "hit@1": 0.6667,
+          "hit@5": 0.9091
+        },
+        "identifier": {
+          "n": 6,
+          "hit@1": 0.3333,
+          "hit@5": 0.3333
+        },
+        "paraphrase": {
+          "n": 11,
+          "hit@1": 0.6364,
+          "hit@5": 0.8182
+        }
+      }
+    },
+    "bm25+rerank": {
+      "hit@1": 0.86,
+      "hit@5": 0.96,
+      "mrr": 0.9,
+      "latency_ms_mean": 288.6178,
+      "latency_ms_p95": 382.55,
+      "by_style": {
+        "direct": {
+          "n": 33,
+          "hit@1": 0.8788,
+          "hit@5": 1.0
+        },
+        "identifier": {
+          "n": 6,
+          "hit@1": 1.0,
+          "hit@5": 1.0
+        },
+        "paraphrase": {
+          "n": 11,
+          "hit@1": 0.7273,
+          "hit@5": 0.8182
+        }
+      }
+    },
+    "dense+rerank": {
+      "hit@1": 0.82,
+      "hit@5": 0.92,
+      "mrr": 0.86,
+      "latency_ms_mean": 301.8239,
+      "latency_ms_p95": 374.2,
+      "by_style": {
+        "direct": {
+          "n": 33,
+          "hit@1": 0.8788,
+          "hit@5": 1.0
+        },
+        "identifier": {
+          "n": 6,
+          "hit@1": 0.3333,
+          "hit@5": 0.3333
+        },
+        "paraphrase": {
+          "n": 11,
+          "hit@1": 0.9091,
+          "hit@5": 1.0
+        }
+      }
+    },
+    "hybrid_rrf+rerank": {
+      "hit@1": 0.9,
+      "hit@5": 1.0,
+      "mrr": 0.94,
+      "latency_ms_mean": 309.5567,
+      "latency_ms_p95": 387.59,
+      "by_style": {
+        "direct": {
+          "n": 33,
+          "hit@1": 0.8788,
+          "hit@5": 1.0
+        },
+        "identifier": {
+          "n": 6,
+          "hit@1": 1.0,
+          "hit@5": 1.0
+        },
+        "paraphrase": {
+          "n": 11,
+          "hit@1": 0.9091,
+          "hit@5": 1.0
+        }
+      }
+    }
+  },
+  "grounding_gate": {
+    "threshold": 0.4,
+    "refusal_accuracy": 1.0,
+    "refusal_precision": 1.0,
+    "refusal_recall": 1.0,
+    "wrongly_refused": 0,
+    "wrongly_answered": 0
+  },
+  "rows": [
+    {
+      "config": "bm25_only",
+      "id": "q01",
+      "question": "What minimum net worth must a non-bank entity have when it applies for authorisation to issue prepaid payment instruments?",
+      "evidence_rank": 2
+    },
+    {
+      "config": "bm25_only",
+      "id": "q02",
+      "question": "Can I withdraw cash from a small prepaid wallet that is limited to Rs. 10,000?",
+      "evidence_rank": 5
+    },
+    {
+      "config": "bm25_only",
+      "id": "q03",
+      "question": "What net worth does a company need to apply for a payment aggregator authorisation, and what must it reach later?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25_only",
+      "id": "q04",
+      "question": "How should a payment aggregator obtain a merchant's KYC details during onboarding?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25_only",
+      "id": "q05",
+      "question": "How long does a bank have to respond to a complaint about a service it has outsourced?",
+      "evidence_rank": 2
+    },
+    {
+      "config": "bm25_only",
+      "id": "q06",
+      "question": "How much advance notice must a bank give existing customers before changing the minimum balance requirement for savings accounts?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25_only",
+      "id": "q07",
+      "question": "My savings account fell below the minimum balance. When can the bank start charging a penalty?",
+      "evidence_rank": 2
+    },
+    {
+      "config": "bm25_only",
+      "id": "q08",
+      "question": "What is a customer's liability for an unauthorised electronic banking transaction caused by a third-party breach if it is reported within four to seven working days?",
+      "evidence_rank": 4
+    },
+    {
+      "config": "bm25_only",
+      "id": "q09",
+      "question": "What limits apply to a 'Small Account' opened at a bank?",
+      "evidence_rank": 5
+    },
+    {
+      "config": "bm25_only",
+      "id": "q10",
+      "question": "For accounts opened using OTP based e-KYC, what is the cap on total credits in a financial year?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25_only",
+      "id": "q11",
+      "question": "How long can an account opened with Aadhaar OTP e-KYC be operated before full identification is needed?",
+      "evidence_rank": 4
+    },
+    {
+      "config": "bm25_only",
+      "id": "q12",
+      "question": "What is the maximum term loan amount that can be sanctioned in a year to a borrowal account opened through OTP based e-KYC?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25_only",
+      "id": "q13",
+      "question": "Can a bank change the tenor premium on base rate loans differently for different borrowers?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25_only",
+      "id": "q14",
+      "question": "I asked my bank to cancel my credit card. How quickly do they have to close it?",
+      "evidence_rank": null
+    },
+    {
+      "config": "bm25_only",
+      "id": "q15",
+      "question": "What must a card issuer do if a credit card has not been activated within 30 days of issuance?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25_only",
+      "id": "q16",
+      "question": "What happens to a credit card that has not been used for more than a year?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25_only",
+      "id": "q17",
+      "question": "Who is responsible for paying the dues on an add-on credit card?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25_only",
+      "id": "q18",
+      "question": "What is the shortest tenor a bank can offer on a domestic term deposit?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25_only",
+      "id": "q19",
+      "question": "How is interest on a domestic savings deposit calculated for balances up to Rs. 1 lakh?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25_only",
+      "id": "q20",
+      "question": "Does a bank need RBI permission before launching transactional internet or mobile banking?",
+      "evidence_rank": 2
+    },
+    {
+      "config": "bm25_only",
+      "id": "q21",
+      "question": "What is the age limit for a Deputy Internal Ombudsman of a bank?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25_only",
+      "id": "q22",
+      "question": "If the Internal Ombudsman position falls vacant unexpectedly, how soon must the bank tell the RBI?",
+      "evidence_rank": null
+    },
+    {
+      "config": "bm25_only",
+      "id": "q23",
+      "question": "How often must a bank's Board review its Fraud Risk Management Policy?",
+      "evidence_rank": 4
+    },
+    {
+      "config": "bm25_only",
+      "id": "q24",
+      "question": "What is the timeline for deciding whether a red-flagged account is a fraud?",
+      "evidence_rank": 3
+    },
+    {
+      "config": "bm25_only",
+      "id": "q25",
+      "question": "How frequently must banks run vulnerability assessment and penetration testing on digital payment applications?",
+      "evidence_rank": null
+    },
+    {
+      "config": "bm25_only",
+      "id": "q26",
+      "question": "Can a foreign portfolio investor submit a digitally signed power of attorney?",
+      "evidence_rank": 3
+    },
+    {
+      "config": "bm25_only",
+      "id": "q27",
+      "question": "How often must market infrastructure institutions compute the IT Resilience Index?",
+      "evidence_rank": 5
+    },
+    {
+      "config": "bm25_only",
+      "id": "q28",
+      "question": "What are the deadlines for reporting a cyber incident to SEBI?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25_only",
+      "id": "q29",
+      "question": "When do the new ETF base price and price band norms come into effect after the extension?",
+      "evidence_rank": 2
+    },
+    {
+      "config": "bm25_only",
+      "id": "q30",
+      "question": "Do FPIs that invest only in government securities have to provide investor group details?",
+      "evidence_rank": 2
+    },
+    {
+      "config": "bm25_only",
+      "id": "q31",
+      "question": "What is the revised date after which Angel Funds cannot accept contributions from non-accredited investors?",
+      "evidence_rank": 2
+    },
+    {
+      "config": "bm25_only",
+      "id": "q32",
+      "question": "How is the monetary penalty calculated when a client level position limit violation is more than 2% of the prescribed limit?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25_only",
+      "id": "q33",
+      "question": "How many ISINs maturing in a financial year can an issuer of debt securities have?",
+      "evidence_rank": 3
+    },
+    {
+      "config": "bm25_only",
+      "id": "q34",
+      "question": "When do the Credit Risk-o-Meter disclosure requirements come into force?",
+      "evidence_rank": null
+    },
+    {
+      "config": "bm25_only",
+      "id": "q35",
+      "question": "Which order types can be placed during the Closing Auction Session?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25_only",
+      "id": "q36",
+      "question": "How far in advance must an FPI pay the fee to continue its registration?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25_only",
+      "id": "q37",
+      "question": "What unit holder approval is needed for a fresh issue of depository receipts on InvIT units?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25_only",
+      "id": "q38",
+      "question": "What is the cap on an FPI's short positions in FCY-INR currency derivative contracts?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25_only",
+      "id": "q39",
+      "question": "Can a mutual fund net its fund obligations across two different schemes?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25_only",
+      "id": "q40",
+      "question": "For how long is an accredited investor certificate valid?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25_only",
+      "id": "q41",
+      "question": "Does a person resident outside India need a certificate to be treated as an accredited investor?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25_only",
+      "id": "q42",
+      "question": "Can an intermediary rely on KYC already done by another SEBI registered intermediary?",
+      "evidence_rank": 2
+    },
+    {
+      "config": "bm25_only",
+      "id": "q43",
+      "question": "What records of client interactions must a research analyst keep?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25_only",
+      "id": "q44",
+      "question": "At what face value can debt securities be issued on a private placement basis?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25_only",
+      "id": "q45",
+      "question": "Which circular has the reference number HO/(320)2026-MRD-POD2/I/24141/2026?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25_only",
+      "id": "q46",
+      "question": "What is RBI/CEPD/2025-26/381 about?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25_only",
+      "id": "q47",
+      "question": "HO/47/18/11(1)2026-MRD-TPD1/I/19509/2026",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25_only",
+      "id": "q48",
+      "question": "Which circular has the reference number RBI/DOR/2025-26/155?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25_only",
+      "id": "q49",
+      "question": "What is HO/19/34/11(6)2026-AFD-POD1/I/25244/2026 about?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25_only",
+      "id": "q50",
+      "question": "RBI/DPSS/2025-26/141",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense_only",
+      "id": "q01",
+      "question": "What minimum net worth must a non-bank entity have when it applies for authorisation to issue prepaid payment instruments?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense_only",
+      "id": "q02",
+      "question": "Can I withdraw cash from a small prepaid wallet that is limited to Rs. 10,000?",
+      "evidence_rank": 3
+    },
+    {
+      "config": "dense_only",
+      "id": "q03",
+      "question": "What net worth does a company need to apply for a payment aggregator authorisation, and what must it reach later?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense_only",
+      "id": "q04",
+      "question": "How should a payment aggregator obtain a merchant's KYC details during onboarding?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense_only",
+      "id": "q05",
+      "question": "How long does a bank have to respond to a complaint about a service it has outsourced?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense_only",
+      "id": "q06",
+      "question": "How much advance notice must a bank give existing customers before changing the minimum balance requirement for savings accounts?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense_only",
+      "id": "q07",
+      "question": "My savings account fell below the minimum balance. When can the bank start charging a penalty?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense_only",
+      "id": "q08",
+      "question": "What is a customer's liability for an unauthorised electronic banking transaction caused by a third-party breach if it is reported within four to seven working days?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense_only",
+      "id": "q09",
+      "question": "What limits apply to a 'Small Account' opened at a bank?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense_only",
+      "id": "q10",
+      "question": "For accounts opened using OTP based e-KYC, what is the cap on total credits in a financial year?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense_only",
+      "id": "q11",
+      "question": "How long can an account opened with Aadhaar OTP e-KYC be operated before full identification is needed?",
+      "evidence_rank": 4
+    },
+    {
+      "config": "dense_only",
+      "id": "q12",
+      "question": "What is the maximum term loan amount that can be sanctioned in a year to a borrowal account opened through OTP based e-KYC?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense_only",
+      "id": "q13",
+      "question": "Can a bank change the tenor premium on base rate loans differently for different borrowers?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense_only",
+      "id": "q14",
+      "question": "I asked my bank to cancel my credit card. How quickly do they have to close it?",
+      "evidence_rank": 3
+    },
+    {
+      "config": "dense_only",
+      "id": "q15",
+      "question": "What must a card issuer do if a credit card has not been activated within 30 days of issuance?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense_only",
+      "id": "q16",
+      "question": "What happens to a credit card that has not been used for more than a year?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense_only",
+      "id": "q17",
+      "question": "Who is responsible for paying the dues on an add-on credit card?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense_only",
+      "id": "q18",
+      "question": "What is the shortest tenor a bank can offer on a domestic term deposit?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense_only",
+      "id": "q19",
+      "question": "How is interest on a domestic savings deposit calculated for balances up to Rs. 1 lakh?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense_only",
+      "id": "q20",
+      "question": "Does a bank need RBI permission before launching transactional internet or mobile banking?",
+      "evidence_rank": 2
+    },
+    {
+      "config": "dense_only",
+      "id": "q21",
+      "question": "What is the age limit for a Deputy Internal Ombudsman of a bank?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense_only",
+      "id": "q22",
+      "question": "If the Internal Ombudsman position falls vacant unexpectedly, how soon must the bank tell the RBI?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense_only",
+      "id": "q23",
+      "question": "How often must a bank's Board review its Fraud Risk Management Policy?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense_only",
+      "id": "q24",
+      "question": "What is the timeline for deciding whether a red-flagged account is a fraud?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense_only",
+      "id": "q25",
+      "question": "How frequently must banks run vulnerability assessment and penetration testing on digital payment applications?",
+      "evidence_rank": null
+    },
+    {
+      "config": "dense_only",
+      "id": "q26",
+      "question": "Can a foreign portfolio investor submit a digitally signed power of attorney?",
+      "evidence_rank": 4
+    },
+    {
+      "config": "dense_only",
+      "id": "q27",
+      "question": "How often must market infrastructure institutions compute the IT Resilience Index?",
+      "evidence_rank": null
+    },
+    {
+      "config": "dense_only",
+      "id": "q28",
+      "question": "What are the deadlines for reporting a cyber incident to SEBI?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense_only",
+      "id": "q29",
+      "question": "When do the new ETF base price and price band norms come into effect after the extension?",
+      "evidence_rank": 2
+    },
+    {
+      "config": "dense_only",
+      "id": "q30",
+      "question": "Do FPIs that invest only in government securities have to provide investor group details?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense_only",
+      "id": "q31",
+      "question": "What is the revised date after which Angel Funds cannot accept contributions from non-accredited investors?",
+      "evidence_rank": 2
+    },
+    {
+      "config": "dense_only",
+      "id": "q32",
+      "question": "How is the monetary penalty calculated when a client level position limit violation is more than 2% of the prescribed limit?",
+      "evidence_rank": 2
+    },
+    {
+      "config": "dense_only",
+      "id": "q33",
+      "question": "How many ISINs maturing in a financial year can an issuer of debt securities have?",
+      "evidence_rank": 2
+    },
+    {
+      "config": "dense_only",
+      "id": "q34",
+      "question": "When do the Credit Risk-o-Meter disclosure requirements come into force?",
+      "evidence_rank": null
+    },
+    {
+      "config": "dense_only",
+      "id": "q35",
+      "question": "Which order types can be placed during the Closing Auction Session?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense_only",
+      "id": "q36",
+      "question": "How far in advance must an FPI pay the fee to continue its registration?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense_only",
+      "id": "q37",
+      "question": "What unit holder approval is needed for a fresh issue of depository receipts on InvIT units?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense_only",
+      "id": "q38",
+      "question": "What is the cap on an FPI's short positions in FCY-INR currency derivative contracts?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense_only",
+      "id": "q39",
+      "question": "Can a mutual fund net its fund obligations across two different schemes?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense_only",
+      "id": "q40",
+      "question": "For how long is an accredited investor certificate valid?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense_only",
+      "id": "q41",
+      "question": "Does a person resident outside India need a certificate to be treated as an accredited investor?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense_only",
+      "id": "q42",
+      "question": "Can an intermediary rely on KYC already done by another SEBI registered intermediary?",
+      "evidence_rank": 3
+    },
+    {
+      "config": "dense_only",
+      "id": "q43",
+      "question": "What records of client interactions must a research analyst keep?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense_only",
+      "id": "q44",
+      "question": "At what face value can debt securities be issued on a private placement basis?",
+      "evidence_rank": 2
+    },
+    {
+      "config": "dense_only",
+      "id": "q45",
+      "question": "Which circular has the reference number HO/(320)2026-MRD-POD2/I/24141/2026?",
+      "evidence_rank": null
+    },
+    {
+      "config": "dense_only",
+      "id": "q46",
+      "question": "What is RBI/CEPD/2025-26/381 about?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense_only",
+      "id": "q47",
+      "question": "HO/47/18/11(1)2026-MRD-TPD1/I/19509/2026",
+      "evidence_rank": null
+    },
+    {
+      "config": "dense_only",
+      "id": "q48",
+      "question": "Which circular has the reference number RBI/DOR/2025-26/155?",
+      "evidence_rank": 4
+    },
+    {
+      "config": "dense_only",
+      "id": "q49",
+      "question": "What is HO/19/34/11(6)2026-AFD-POD1/I/25244/2026 about?",
+      "evidence_rank": null
+    },
+    {
+      "config": "dense_only",
+      "id": "q50",
+      "question": "RBI/DPSS/2025-26/141",
+      "evidence_rank": null
+    },
+    {
+      "config": "hybrid_rrf",
+      "id": "q01",
+      "question": "What minimum net worth must a non-bank entity have when it applies for authorisation to issue prepaid payment instruments?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf",
+      "id": "q02",
+      "question": "Can I withdraw cash from a small prepaid wallet that is limited to Rs. 10,000?",
+      "evidence_rank": 4
+    },
+    {
+      "config": "hybrid_rrf",
+      "id": "q03",
+      "question": "What net worth does a company need to apply for a payment aggregator authorisation, and what must it reach later?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf",
+      "id": "q04",
+      "question": "How should a payment aggregator obtain a merchant's KYC details during onboarding?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf",
+      "id": "q05",
+      "question": "How long does a bank have to respond to a complaint about a service it has outsourced?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf",
+      "id": "q06",
+      "question": "How much advance notice must a bank give existing customers before changing the minimum balance requirement for savings accounts?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf",
+      "id": "q07",
+      "question": "My savings account fell below the minimum balance. When can the bank start charging a penalty?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf",
+      "id": "q08",
+      "question": "What is a customer's liability for an unauthorised electronic banking transaction caused by a third-party breach if it is reported within four to seven working days?",
+      "evidence_rank": 2
+    },
+    {
+      "config": "hybrid_rrf",
+      "id": "q09",
+      "question": "What limits apply to a 'Small Account' opened at a bank?",
+      "evidence_rank": 2
+    },
+    {
+      "config": "hybrid_rrf",
+      "id": "q10",
+      "question": "For accounts opened using OTP based e-KYC, what is the cap on total credits in a financial year?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf",
+      "id": "q11",
+      "question": "How long can an account opened with Aadhaar OTP e-KYC be operated before full identification is needed?",
+      "evidence_rank": 3
+    },
+    {
+      "config": "hybrid_rrf",
+      "id": "q12",
+      "question": "What is the maximum term loan amount that can be sanctioned in a year to a borrowal account opened through OTP based e-KYC?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf",
+      "id": "q13",
+      "question": "Can a bank change the tenor premium on base rate loans differently for different borrowers?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf",
+      "id": "q14",
+      "question": "I asked my bank to cancel my credit card. How quickly do they have to close it?",
+      "evidence_rank": null
+    },
+    {
+      "config": "hybrid_rrf",
+      "id": "q15",
+      "question": "What must a card issuer do if a credit card has not been activated within 30 days of issuance?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf",
+      "id": "q16",
+      "question": "What happens to a credit card that has not been used for more than a year?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf",
+      "id": "q17",
+      "question": "Who is responsible for paying the dues on an add-on credit card?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf",
+      "id": "q18",
+      "question": "What is the shortest tenor a bank can offer on a domestic term deposit?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf",
+      "id": "q19",
+      "question": "How is interest on a domestic savings deposit calculated for balances up to Rs. 1 lakh?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf",
+      "id": "q20",
+      "question": "Does a bank need RBI permission before launching transactional internet or mobile banking?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf",
+      "id": "q21",
+      "question": "What is the age limit for a Deputy Internal Ombudsman of a bank?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf",
+      "id": "q22",
+      "question": "If the Internal Ombudsman position falls vacant unexpectedly, how soon must the bank tell the RBI?",
+      "evidence_rank": null
+    },
+    {
+      "config": "hybrid_rrf",
+      "id": "q23",
+      "question": "How often must a bank's Board review its Fraud Risk Management Policy?",
+      "evidence_rank": 2
+    },
+    {
+      "config": "hybrid_rrf",
+      "id": "q24",
+      "question": "What is the timeline for deciding whether a red-flagged account is a fraud?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf",
+      "id": "q25",
+      "question": "How frequently must banks run vulnerability assessment and penetration testing on digital payment applications?",
+      "evidence_rank": null
+    },
+    {
+      "config": "hybrid_rrf",
+      "id": "q26",
+      "question": "Can a foreign portfolio investor submit a digitally signed power of attorney?",
+      "evidence_rank": 4
+    },
+    {
+      "config": "hybrid_rrf",
+      "id": "q27",
+      "question": "How often must market infrastructure institutions compute the IT Resilience Index?",
+      "evidence_rank": null
+    },
+    {
+      "config": "hybrid_rrf",
+      "id": "q28",
+      "question": "What are the deadlines for reporting a cyber incident to SEBI?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf",
+      "id": "q29",
+      "question": "When do the new ETF base price and price band norms come into effect after the extension?",
+      "evidence_rank": 2
+    },
+    {
+      "config": "hybrid_rrf",
+      "id": "q30",
+      "question": "Do FPIs that invest only in government securities have to provide investor group details?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf",
+      "id": "q31",
+      "question": "What is the revised date after which Angel Funds cannot accept contributions from non-accredited investors?",
+      "evidence_rank": 2
+    },
+    {
+      "config": "hybrid_rrf",
+      "id": "q32",
+      "question": "How is the monetary penalty calculated when a client level position limit violation is more than 2% of the prescribed limit?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf",
+      "id": "q33",
+      "question": "How many ISINs maturing in a financial year can an issuer of debt securities have?",
+      "evidence_rank": 2
+    },
+    {
+      "config": "hybrid_rrf",
+      "id": "q34",
+      "question": "When do the Credit Risk-o-Meter disclosure requirements come into force?",
+      "evidence_rank": null
+    },
+    {
+      "config": "hybrid_rrf",
+      "id": "q35",
+      "question": "Which order types can be placed during the Closing Auction Session?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf",
+      "id": "q36",
+      "question": "How far in advance must an FPI pay the fee to continue its registration?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf",
+      "id": "q37",
+      "question": "What unit holder approval is needed for a fresh issue of depository receipts on InvIT units?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf",
+      "id": "q38",
+      "question": "What is the cap on an FPI's short positions in FCY-INR currency derivative contracts?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf",
+      "id": "q39",
+      "question": "Can a mutual fund net its fund obligations across two different schemes?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf",
+      "id": "q40",
+      "question": "For how long is an accredited investor certificate valid?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf",
+      "id": "q41",
+      "question": "Does a person resident outside India need a certificate to be treated as an accredited investor?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf",
+      "id": "q42",
+      "question": "Can an intermediary rely on KYC already done by another SEBI registered intermediary?",
+      "evidence_rank": 3
+    },
+    {
+      "config": "hybrid_rrf",
+      "id": "q43",
+      "question": "What records of client interactions must a research analyst keep?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf",
+      "id": "q44",
+      "question": "At what face value can debt securities be issued on a private placement basis?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf",
+      "id": "q45",
+      "question": "Which circular has the reference number HO/(320)2026-MRD-POD2/I/24141/2026?",
+      "evidence_rank": null
+    },
+    {
+      "config": "hybrid_rrf",
+      "id": "q46",
+      "question": "What is RBI/CEPD/2025-26/381 about?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf",
+      "id": "q47",
+      "question": "HO/47/18/11(1)2026-MRD-TPD1/I/19509/2026",
+      "evidence_rank": null
+    },
+    {
+      "config": "hybrid_rrf",
+      "id": "q48",
+      "question": "Which circular has the reference number RBI/DOR/2025-26/155?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf",
+      "id": "q49",
+      "question": "What is HO/19/34/11(6)2026-AFD-POD1/I/25244/2026 about?",
+      "evidence_rank": null
+    },
+    {
+      "config": "hybrid_rrf",
+      "id": "q50",
+      "question": "RBI/DPSS/2025-26/141",
+      "evidence_rank": null
+    },
+    {
+      "config": "bm25+rerank",
+      "id": "q01",
+      "question": "What minimum net worth must a non-bank entity have when it applies for authorisation to issue prepaid payment instruments?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25+rerank",
+      "id": "q02",
+      "question": "Can I withdraw cash from a small prepaid wallet that is limited to Rs. 10,000?",
+      "evidence_rank": 2
+    },
+    {
+      "config": "bm25+rerank",
+      "id": "q03",
+      "question": "What net worth does a company need to apply for a payment aggregator authorisation, and what must it reach later?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25+rerank",
+      "id": "q04",
+      "question": "How should a payment aggregator obtain a merchant's KYC details during onboarding?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25+rerank",
+      "id": "q05",
+      "question": "How long does a bank have to respond to a complaint about a service it has outsourced?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25+rerank",
+      "id": "q06",
+      "question": "How much advance notice must a bank give existing customers before changing the minimum balance requirement for savings accounts?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25+rerank",
+      "id": "q07",
+      "question": "My savings account fell below the minimum balance. When can the bank start charging a penalty?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25+rerank",
+      "id": "q08",
+      "question": "What is a customer's liability for an unauthorised electronic banking transaction caused by a third-party breach if it is reported within four to seven working days?",
+      "evidence_rank": 2
+    },
+    {
+      "config": "bm25+rerank",
+      "id": "q09",
+      "question": "What limits apply to a 'Small Account' opened at a bank?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25+rerank",
+      "id": "q10",
+      "question": "For accounts opened using OTP based e-KYC, what is the cap on total credits in a financial year?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25+rerank",
+      "id": "q11",
+      "question": "How long can an account opened with Aadhaar OTP e-KYC be operated before full identification is needed?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25+rerank",
+      "id": "q12",
+      "question": "What is the maximum term loan amount that can be sanctioned in a year to a borrowal account opened through OTP based e-KYC?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25+rerank",
+      "id": "q13",
+      "question": "Can a bank change the tenor premium on base rate loans differently for different borrowers?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25+rerank",
+      "id": "q14",
+      "question": "I asked my bank to cancel my credit card. How quickly do they have to close it?",
+      "evidence_rank": null
+    },
+    {
+      "config": "bm25+rerank",
+      "id": "q15",
+      "question": "What must a card issuer do if a credit card has not been activated within 30 days of issuance?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25+rerank",
+      "id": "q16",
+      "question": "What happens to a credit card that has not been used for more than a year?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25+rerank",
+      "id": "q17",
+      "question": "Who is responsible for paying the dues on an add-on credit card?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25+rerank",
+      "id": "q18",
+      "question": "What is the shortest tenor a bank can offer on a domestic term deposit?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25+rerank",
+      "id": "q19",
+      "question": "How is interest on a domestic savings deposit calculated for balances up to Rs. 1 lakh?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25+rerank",
+      "id": "q20",
+      "question": "Does a bank need RBI permission before launching transactional internet or mobile banking?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25+rerank",
+      "id": "q21",
+      "question": "What is the age limit for a Deputy Internal Ombudsman of a bank?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25+rerank",
+      "id": "q22",
+      "question": "If the Internal Ombudsman position falls vacant unexpectedly, how soon must the bank tell the RBI?",
+      "evidence_rank": null
+    },
+    {
+      "config": "bm25+rerank",
+      "id": "q23",
+      "question": "How often must a bank's Board review its Fraud Risk Management Policy?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25+rerank",
+      "id": "q24",
+      "question": "What is the timeline for deciding whether a red-flagged account is a fraud?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25+rerank",
+      "id": "q25",
+      "question": "How frequently must banks run vulnerability assessment and penetration testing on digital payment applications?",
+      "evidence_rank": 4
+    },
+    {
+      "config": "bm25+rerank",
+      "id": "q26",
+      "question": "Can a foreign portfolio investor submit a digitally signed power of attorney?",
+      "evidence_rank": 4
+    },
+    {
+      "config": "bm25+rerank",
+      "id": "q27",
+      "question": "How often must market infrastructure institutions compute the IT Resilience Index?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25+rerank",
+      "id": "q28",
+      "question": "What are the deadlines for reporting a cyber incident to SEBI?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25+rerank",
+      "id": "q29",
+      "question": "When do the new ETF base price and price band norms come into effect after the extension?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25+rerank",
+      "id": "q30",
+      "question": "Do FPIs that invest only in government securities have to provide investor group details?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25+rerank",
+      "id": "q31",
+      "question": "What is the revised date after which Angel Funds cannot accept contributions from non-accredited investors?",
+      "evidence_rank": 2
+    },
+    {
+      "config": "bm25+rerank",
+      "id": "q32",
+      "question": "How is the monetary penalty calculated when a client level position limit violation is more than 2% of the prescribed limit?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25+rerank",
+      "id": "q33",
+      "question": "How many ISINs maturing in a financial year can an issuer of debt securities have?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25+rerank",
+      "id": "q34",
+      "question": "When do the Credit Risk-o-Meter disclosure requirements come into force?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25+rerank",
+      "id": "q35",
+      "question": "Which order types can be placed during the Closing Auction Session?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25+rerank",
+      "id": "q36",
+      "question": "How far in advance must an FPI pay the fee to continue its registration?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25+rerank",
+      "id": "q37",
+      "question": "What unit holder approval is needed for a fresh issue of depository receipts on InvIT units?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25+rerank",
+      "id": "q38",
+      "question": "What is the cap on an FPI's short positions in FCY-INR currency derivative contracts?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25+rerank",
+      "id": "q39",
+      "question": "Can a mutual fund net its fund obligations across two different schemes?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25+rerank",
+      "id": "q40",
+      "question": "For how long is an accredited investor certificate valid?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25+rerank",
+      "id": "q41",
+      "question": "Does a person resident outside India need a certificate to be treated as an accredited investor?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25+rerank",
+      "id": "q42",
+      "question": "Can an intermediary rely on KYC already done by another SEBI registered intermediary?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25+rerank",
+      "id": "q43",
+      "question": "What records of client interactions must a research analyst keep?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25+rerank",
+      "id": "q44",
+      "question": "At what face value can debt securities be issued on a private placement basis?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25+rerank",
+      "id": "q45",
+      "question": "Which circular has the reference number HO/(320)2026-MRD-POD2/I/24141/2026?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25+rerank",
+      "id": "q46",
+      "question": "What is RBI/CEPD/2025-26/381 about?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25+rerank",
+      "id": "q47",
+      "question": "HO/47/18/11(1)2026-MRD-TPD1/I/19509/2026",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25+rerank",
+      "id": "q48",
+      "question": "Which circular has the reference number RBI/DOR/2025-26/155?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25+rerank",
+      "id": "q49",
+      "question": "What is HO/19/34/11(6)2026-AFD-POD1/I/25244/2026 about?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "bm25+rerank",
+      "id": "q50",
+      "question": "RBI/DPSS/2025-26/141",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense+rerank",
+      "id": "q01",
+      "question": "What minimum net worth must a non-bank entity have when it applies for authorisation to issue prepaid payment instruments?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense+rerank",
+      "id": "q02",
+      "question": "Can I withdraw cash from a small prepaid wallet that is limited to Rs. 10,000?",
+      "evidence_rank": 2
+    },
+    {
+      "config": "dense+rerank",
+      "id": "q03",
+      "question": "What net worth does a company need to apply for a payment aggregator authorisation, and what must it reach later?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense+rerank",
+      "id": "q04",
+      "question": "How should a payment aggregator obtain a merchant's KYC details during onboarding?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense+rerank",
+      "id": "q05",
+      "question": "How long does a bank have to respond to a complaint about a service it has outsourced?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense+rerank",
+      "id": "q06",
+      "question": "How much advance notice must a bank give existing customers before changing the minimum balance requirement for savings accounts?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense+rerank",
+      "id": "q07",
+      "question": "My savings account fell below the minimum balance. When can the bank start charging a penalty?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense+rerank",
+      "id": "q08",
+      "question": "What is a customer's liability for an unauthorised electronic banking transaction caused by a third-party breach if it is reported within four to seven working days?",
+      "evidence_rank": 2
+    },
+    {
+      "config": "dense+rerank",
+      "id": "q09",
+      "question": "What limits apply to a 'Small Account' opened at a bank?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense+rerank",
+      "id": "q10",
+      "question": "For accounts opened using OTP based e-KYC, what is the cap on total credits in a financial year?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense+rerank",
+      "id": "q11",
+      "question": "How long can an account opened with Aadhaar OTP e-KYC be operated before full identification is needed?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense+rerank",
+      "id": "q12",
+      "question": "What is the maximum term loan amount that can be sanctioned in a year to a borrowal account opened through OTP based e-KYC?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense+rerank",
+      "id": "q13",
+      "question": "Can a bank change the tenor premium on base rate loans differently for different borrowers?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense+rerank",
+      "id": "q14",
+      "question": "I asked my bank to cancel my credit card. How quickly do they have to close it?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense+rerank",
+      "id": "q15",
+      "question": "What must a card issuer do if a credit card has not been activated within 30 days of issuance?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense+rerank",
+      "id": "q16",
+      "question": "What happens to a credit card that has not been used for more than a year?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense+rerank",
+      "id": "q17",
+      "question": "Who is responsible for paying the dues on an add-on credit card?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense+rerank",
+      "id": "q18",
+      "question": "What is the shortest tenor a bank can offer on a domestic term deposit?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense+rerank",
+      "id": "q19",
+      "question": "How is interest on a domestic savings deposit calculated for balances up to Rs. 1 lakh?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense+rerank",
+      "id": "q20",
+      "question": "Does a bank need RBI permission before launching transactional internet or mobile banking?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense+rerank",
+      "id": "q21",
+      "question": "What is the age limit for a Deputy Internal Ombudsman of a bank?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense+rerank",
+      "id": "q22",
+      "question": "If the Internal Ombudsman position falls vacant unexpectedly, how soon must the bank tell the RBI?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense+rerank",
+      "id": "q23",
+      "question": "How often must a bank's Board review its Fraud Risk Management Policy?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense+rerank",
+      "id": "q24",
+      "question": "What is the timeline for deciding whether a red-flagged account is a fraud?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense+rerank",
+      "id": "q25",
+      "question": "How frequently must banks run vulnerability assessment and penetration testing on digital payment applications?",
+      "evidence_rank": 4
+    },
+    {
+      "config": "dense+rerank",
+      "id": "q26",
+      "question": "Can a foreign portfolio investor submit a digitally signed power of attorney?",
+      "evidence_rank": 4
+    },
+    {
+      "config": "dense+rerank",
+      "id": "q27",
+      "question": "How often must market infrastructure institutions compute the IT Resilience Index?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense+rerank",
+      "id": "q28",
+      "question": "What are the deadlines for reporting a cyber incident to SEBI?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense+rerank",
+      "id": "q29",
+      "question": "When do the new ETF base price and price band norms come into effect after the extension?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense+rerank",
+      "id": "q30",
+      "question": "Do FPIs that invest only in government securities have to provide investor group details?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense+rerank",
+      "id": "q31",
+      "question": "What is the revised date after which Angel Funds cannot accept contributions from non-accredited investors?",
+      "evidence_rank": 2
+    },
+    {
+      "config": "dense+rerank",
+      "id": "q32",
+      "question": "How is the monetary penalty calculated when a client level position limit violation is more than 2% of the prescribed limit?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense+rerank",
+      "id": "q33",
+      "question": "How many ISINs maturing in a financial year can an issuer of debt securities have?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense+rerank",
+      "id": "q34",
+      "question": "When do the Credit Risk-o-Meter disclosure requirements come into force?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense+rerank",
+      "id": "q35",
+      "question": "Which order types can be placed during the Closing Auction Session?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense+rerank",
+      "id": "q36",
+      "question": "How far in advance must an FPI pay the fee to continue its registration?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense+rerank",
+      "id": "q37",
+      "question": "What unit holder approval is needed for a fresh issue of depository receipts on InvIT units?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense+rerank",
+      "id": "q38",
+      "question": "What is the cap on an FPI's short positions in FCY-INR currency derivative contracts?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense+rerank",
+      "id": "q39",
+      "question": "Can a mutual fund net its fund obligations across two different schemes?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense+rerank",
+      "id": "q40",
+      "question": "For how long is an accredited investor certificate valid?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense+rerank",
+      "id": "q41",
+      "question": "Does a person resident outside India need a certificate to be treated as an accredited investor?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense+rerank",
+      "id": "q42",
+      "question": "Can an intermediary rely on KYC already done by another SEBI registered intermediary?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense+rerank",
+      "id": "q43",
+      "question": "What records of client interactions must a research analyst keep?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense+rerank",
+      "id": "q44",
+      "question": "At what face value can debt securities be issued on a private placement basis?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense+rerank",
+      "id": "q45",
+      "question": "Which circular has the reference number HO/(320)2026-MRD-POD2/I/24141/2026?",
+      "evidence_rank": null
+    },
+    {
+      "config": "dense+rerank",
+      "id": "q46",
+      "question": "What is RBI/CEPD/2025-26/381 about?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense+rerank",
+      "id": "q47",
+      "question": "HO/47/18/11(1)2026-MRD-TPD1/I/19509/2026",
+      "evidence_rank": null
+    },
+    {
+      "config": "dense+rerank",
+      "id": "q48",
+      "question": "Which circular has the reference number RBI/DOR/2025-26/155?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "dense+rerank",
+      "id": "q49",
+      "question": "What is HO/19/34/11(6)2026-AFD-POD1/I/25244/2026 about?",
+      "evidence_rank": null
+    },
+    {
+      "config": "dense+rerank",
+      "id": "q50",
+      "question": "RBI/DPSS/2025-26/141",
+      "evidence_rank": null
+    },
+    {
+      "config": "hybrid_rrf+rerank",
+      "id": "q01",
+      "question": "What minimum net worth must a non-bank entity have when it applies for authorisation to issue prepaid payment instruments?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf+rerank",
+      "id": "q02",
+      "question": "Can I withdraw cash from a small prepaid wallet that is limited to Rs. 10,000?",
+      "evidence_rank": 2
+    },
+    {
+      "config": "hybrid_rrf+rerank",
+      "id": "q03",
+      "question": "What net worth does a company need to apply for a payment aggregator authorisation, and what must it reach later?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf+rerank",
+      "id": "q04",
+      "question": "How should a payment aggregator obtain a merchant's KYC details during onboarding?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf+rerank",
+      "id": "q05",
+      "question": "How long does a bank have to respond to a complaint about a service it has outsourced?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf+rerank",
+      "id": "q06",
+      "question": "How much advance notice must a bank give existing customers before changing the minimum balance requirement for savings accounts?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf+rerank",
+      "id": "q07",
+      "question": "My savings account fell below the minimum balance. When can the bank start charging a penalty?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf+rerank",
+      "id": "q08",
+      "question": "What is a customer's liability for an unauthorised electronic banking transaction caused by a third-party breach if it is reported within four to seven working days?",
+      "evidence_rank": 2
+    },
+    {
+      "config": "hybrid_rrf+rerank",
+      "id": "q09",
+      "question": "What limits apply to a 'Small Account' opened at a bank?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf+rerank",
+      "id": "q10",
+      "question": "For accounts opened using OTP based e-KYC, what is the cap on total credits in a financial year?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf+rerank",
+      "id": "q11",
+      "question": "How long can an account opened with Aadhaar OTP e-KYC be operated before full identification is needed?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf+rerank",
+      "id": "q12",
+      "question": "What is the maximum term loan amount that can be sanctioned in a year to a borrowal account opened through OTP based e-KYC?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf+rerank",
+      "id": "q13",
+      "question": "Can a bank change the tenor premium on base rate loans differently for different borrowers?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf+rerank",
+      "id": "q14",
+      "question": "I asked my bank to cancel my credit card. How quickly do they have to close it?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf+rerank",
+      "id": "q15",
+      "question": "What must a card issuer do if a credit card has not been activated within 30 days of issuance?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf+rerank",
+      "id": "q16",
+      "question": "What happens to a credit card that has not been used for more than a year?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf+rerank",
+      "id": "q17",
+      "question": "Who is responsible for paying the dues on an add-on credit card?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf+rerank",
+      "id": "q18",
+      "question": "What is the shortest tenor a bank can offer on a domestic term deposit?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf+rerank",
+      "id": "q19",
+      "question": "How is interest on a domestic savings deposit calculated for balances up to Rs. 1 lakh?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf+rerank",
+      "id": "q20",
+      "question": "Does a bank need RBI permission before launching transactional internet or mobile banking?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf+rerank",
+      "id": "q21",
+      "question": "What is the age limit for a Deputy Internal Ombudsman of a bank?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf+rerank",
+      "id": "q22",
+      "question": "If the Internal Ombudsman position falls vacant unexpectedly, how soon must the bank tell the RBI?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf+rerank",
+      "id": "q23",
+      "question": "How often must a bank's Board review its Fraud Risk Management Policy?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf+rerank",
+      "id": "q24",
+      "question": "What is the timeline for deciding whether a red-flagged account is a fraud?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf+rerank",
+      "id": "q25",
+      "question": "How frequently must banks run vulnerability assessment and penetration testing on digital payment applications?",
+      "evidence_rank": 4
+    },
+    {
+      "config": "hybrid_rrf+rerank",
+      "id": "q26",
+      "question": "Can a foreign portfolio investor submit a digitally signed power of attorney?",
+      "evidence_rank": 4
+    },
+    {
+      "config": "hybrid_rrf+rerank",
+      "id": "q27",
+      "question": "How often must market infrastructure institutions compute the IT Resilience Index?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf+rerank",
+      "id": "q28",
+      "question": "What are the deadlines for reporting a cyber incident to SEBI?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf+rerank",
+      "id": "q29",
+      "question": "When do the new ETF base price and price band norms come into effect after the extension?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf+rerank",
+      "id": "q30",
+      "question": "Do FPIs that invest only in government securities have to provide investor group details?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf+rerank",
+      "id": "q31",
+      "question": "What is the revised date after which Angel Funds cannot accept contributions from non-accredited investors?",
+      "evidence_rank": 2
+    },
+    {
+      "config": "hybrid_rrf+rerank",
+      "id": "q32",
+      "question": "How is the monetary penalty calculated when a client level position limit violation is more than 2% of the prescribed limit?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf+rerank",
+      "id": "q33",
+      "question": "How many ISINs maturing in a financial year can an issuer of debt securities have?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf+rerank",
+      "id": "q34",
+      "question": "When do the Credit Risk-o-Meter disclosure requirements come into force?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf+rerank",
+      "id": "q35",
+      "question": "Which order types can be placed during the Closing Auction Session?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf+rerank",
+      "id": "q36",
+      "question": "How far in advance must an FPI pay the fee to continue its registration?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf+rerank",
+      "id": "q37",
+      "question": "What unit holder approval is needed for a fresh issue of depository receipts on InvIT units?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf+rerank",
+      "id": "q38",
+      "question": "What is the cap on an FPI's short positions in FCY-INR currency derivative contracts?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf+rerank",
+      "id": "q39",
+      "question": "Can a mutual fund net its fund obligations across two different schemes?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf+rerank",
+      "id": "q40",
+      "question": "For how long is an accredited investor certificate valid?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf+rerank",
+      "id": "q41",
+      "question": "Does a person resident outside India need a certificate to be treated as an accredited investor?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf+rerank",
+      "id": "q42",
+      "question": "Can an intermediary rely on KYC already done by another SEBI registered intermediary?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf+rerank",
+      "id": "q43",
+      "question": "What records of client interactions must a research analyst keep?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf+rerank",
+      "id": "q44",
+      "question": "At what face value can debt securities be issued on a private placement basis?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf+rerank",
+      "id": "q45",
+      "question": "Which circular has the reference number HO/(320)2026-MRD-POD2/I/24141/2026?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf+rerank",
+      "id": "q46",
+      "question": "What is RBI/CEPD/2025-26/381 about?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf+rerank",
+      "id": "q47",
+      "question": "HO/47/18/11(1)2026-MRD-TPD1/I/19509/2026",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf+rerank",
+      "id": "q48",
+      "question": "Which circular has the reference number RBI/DOR/2025-26/155?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf+rerank",
+      "id": "q49",
+      "question": "What is HO/19/34/11(6)2026-AFD-POD1/I/25244/2026 about?",
+      "evidence_rank": 1
+    },
+    {
+      "config": "hybrid_rrf+rerank",
+      "id": "q50",
+      "question": "RBI/DPSS/2025-26/141",
+      "evidence_rank": 1
+    }
+  ],
+  "gate_rows": [
+    {
+      "id": "q01",
+      "answerable": true,
+      "top_relevance": 0.9998,
+      "refused": false
+    },
+    {
+      "id": "q02",
+      "answerable": true,
+      "top_relevance": 0.987,
+      "refused": false
+    },
+    {
+      "id": "q03",
+      "answerable": true,
+      "top_relevance": 0.992,
+      "refused": false
+    },
+    {
+      "id": "q04",
+      "answerable": true,
+      "top_relevance": 0.9964,
+      "refused": false
+    },
+    {
+      "id": "q05",
+      "answerable": true,
+      "top_relevance": 0.9996,
+      "refused": false
+    },
+    {
+      "id": "q06",
+      "answerable": true,
+      "top_relevance": 0.9945,
+      "refused": false
+    },
+    {
+      "id": "q07",
+      "answerable": true,
+      "top_relevance": 0.9685,
+      "refused": false
+    },
+    {
+      "id": "q08",
+      "answerable": true,
+      "top_relevance": 0.9977,
+      "refused": false
+    },
+    {
+      "id": "q09",
+      "answerable": true,
+      "top_relevance": 0.9954,
+      "refused": false
+    },
+    {
+      "id": "q10",
+      "answerable": true,
+      "top_relevance": 0.9964,
+      "refused": false
+    },
+    {
+      "id": "q11",
+      "answerable": true,
+      "top_relevance": 0.9888,
+      "refused": false
+    },
+    {
+      "id": "q12",
+      "answerable": true,
+      "top_relevance": 0.9996,
+      "refused": false
+    },
+    {
+      "id": "q13",
+      "answerable": true,
+      "top_relevance": 0.9989,
+      "refused": false
+    },
+    {
+      "id": "q14",
+      "answerable": true,
+      "top_relevance": 0.8861,
+      "refused": false
+    },
+    {
+      "id": "q15",
+      "answerable": true,
+      "top_relevance": 0.9997,
+      "refused": false
+    },
+    {
+      "id": "q16",
+      "answerable": true,
+      "top_relevance": 0.998,
+      "refused": false
+    },
+    {
+      "id": "q17",
+      "answerable": true,
+      "top_relevance": 0.9833,
+      "refused": false
+    },
+    {
+      "id": "q18",
+      "answerable": true,
+      "top_relevance": 0.8412,
+      "refused": false
+    },
+    {
+      "id": "q19",
+      "answerable": true,
+      "top_relevance": 0.9989,
+      "refused": false
+    },
+    {
+      "id": "q20",
+      "answerable": true,
+      "top_relevance": 0.9263,
+      "refused": false
+    },
+    {
+      "id": "q21",
+      "answerable": true,
+      "top_relevance": 0.9993,
+      "refused": false
+    },
+    {
+      "id": "q22",
+      "answerable": true,
+      "top_relevance": 0.4245,
+      "refused": false
+    },
+    {
+      "id": "q23",
+      "answerable": true,
+      "top_relevance": 0.9999,
+      "refused": false
+    },
+    {
+      "id": "q24",
+      "answerable": true,
+      "top_relevance": 0.9939,
+      "refused": false
+    },
+    {
+      "id": "q25",
+      "answerable": true,
+      "top_relevance": 0.9788,
+      "refused": false
+    },
+    {
+      "id": "q26",
+      "answerable": true,
+      "top_relevance": 0.9996,
+      "refused": false
+    },
+    {
+      "id": "q27",
+      "answerable": true,
+      "top_relevance": 0.9986,
+      "refused": false
+    },
+    {
+      "id": "q28",
+      "answerable": true,
+      "top_relevance": 0.9971,
+      "refused": false
+    },
+    {
+      "id": "q29",
+      "answerable": true,
+      "top_relevance": 0.9989,
+      "refused": false
+    },
+    {
+      "id": "q30",
+      "answerable": true,
+      "top_relevance": 0.9999,
+      "refused": false
+    },
+    {
+      "id": "q31",
+      "answerable": true,
+      "top_relevance": 0.9994,
+      "refused": false
+    },
+    {
+      "id": "q32",
+      "answerable": true,
+      "top_relevance": 0.9982,
+      "refused": false
+    },
+    {
+      "id": "q33",
+      "answerable": true,
+      "top_relevance": 0.9996,
+      "refused": false
+    },
+    {
+      "id": "q34",
+      "answerable": true,
+      "top_relevance": 0.9991,
+      "refused": false
+    },
+    {
+      "id": "q35",
+      "answerable": true,
+      "top_relevance": 0.9991,
+      "refused": false
+    },
+    {
+      "id": "q36",
+      "answerable": true,
+      "top_relevance": 0.9974,
+      "refused": false
+    },
+    {
+      "id": "q37",
+      "answerable": true,
+      "top_relevance": 0.9997,
+      "refused": false
+    },
+    {
+      "id": "q38",
+      "answerable": true,
+      "top_relevance": 0.9894,
+      "refused": false
+    },
+    {
+      "id": "q39",
+      "answerable": true,
+      "top_relevance": 0.9997,
+      "refused": false
+    },
+    {
+      "id": "q40",
+      "answerable": true,
+      "top_relevance": 0.9998,
+      "refused": false
+    },
+    {
+      "id": "q41",
+      "answerable": true,
+      "top_relevance": 0.9999,
+      "refused": false
+    },
+    {
+      "id": "q42",
+      "answerable": true,
+      "top_relevance": 0.9995,
+      "refused": false
+    },
+    {
+      "id": "q43",
+      "answerable": true,
+      "top_relevance": 0.9992,
+      "refused": false
+    },
+    {
+      "id": "q44",
+      "answerable": true,
+      "top_relevance": 0.999,
+      "refused": false
+    },
+    {
+      "id": "q45",
+      "answerable": true,
+      "top_relevance": 0.9922,
+      "refused": false
+    },
+    {
+      "id": "q46",
+      "answerable": true,
+      "top_relevance": 0.9926,
+      "refused": false
+    },
+    {
+      "id": "q47",
+      "answerable": true,
+      "top_relevance": 0.9996,
+      "refused": false
+    },
+    {
+      "id": "q48",
+      "answerable": true,
+      "top_relevance": 0.9102,
+      "refused": false
+    },
+    {
+      "id": "q49",
+      "answerable": true,
+      "top_relevance": 0.9943,
+      "refused": false
+    },
+    {
+      "id": "q50",
+      "answerable": true,
+      "top_relevance": 0.9991,
+      "refused": false
+    },
+    {
+      "id": "q51",
+      "answerable": false,
+      "top_relevance": 0.0306,
+      "refused": true
+    },
+    {
+      "id": "q52",
+      "answerable": false,
+      "top_relevance": 0.0314,
+      "refused": true
+    },
+    {
+      "id": "q53",
+      "answerable": false,
+      "top_relevance": 0.3597,
+      "refused": true
+    },
+    {
+      "id": "q54",
+      "answerable": false,
+      "top_relevance": 0.0012,
+      "refused": true
+    },
+    {
+      "id": "q55",
+      "answerable": false,
+      "top_relevance": 0.0255,
+      "refused": true
+    },
+    {
+      "id": "q56",
+      "answerable": false,
+      "top_relevance": 0.0013,
+      "refused": true
+    },
+    {
+      "id": "q57",
+      "answerable": false,
+      "top_relevance": 0.0007,
+      "refused": true
+    },
+    {
+      "id": "q58",
+      "answerable": false,
+      "top_relevance": 0.0029,
+      "refused": true
+    },
+    {
+      "id": "q59",
+      "answerable": false,
+      "top_relevance": 0.0004,
+      "refused": true
+    },
+    {
+      "id": "q60",
+      "answerable": false,
+      "top_relevance": 0.0,
+      "refused": true
+    },
+    {
+      "id": "q61",
+      "answerable": false,
+      "top_relevance": 0.0,
+      "refused": true
+    },
+    {
+      "id": "q62",
+      "answerable": false,
+      "top_relevance": 0.1417,
+      "refused": true
+    }
+  ]
+}

@@ -1,0 +1,3 @@
+# Streamlit Community Cloud installs from the requirements file next to the app.
+-r ../../requirements.txt
+streamlit>=1.36

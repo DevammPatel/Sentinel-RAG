@@ -1,23 +1,26 @@
-.PHONY: help install ingest-sample serve test eval up down fmt smoke
+.PHONY: help install fetch ingest serve test smoke eval calibrate lint
 
 help:
-	@echo "Targets:"
-	@echo "  install         pip install -r requirements.txt + editable package"
-	@echo "  ingest-sample   load the offline SEBI/RBI sample corpus into the index"
-	@echo "  serve           run the FastAPI app locally (uvicorn, reload)"
-	@echo "  test            run the pytest suite"
-	@echo "  smoke           end-to-end wiring check with no API keys"
-	@echo "  eval            run the RAGAS + custom eval harness"
-	@echo "  up / down       start / stop the full docker stack (api+pgvector+phoenix)"
+	@echo "install    create deps (pip install -r requirements-dev.txt + editable package)"
+	@echo "fetch      download the official SEBI/RBI documents listed in data/sources.json"
+	@echo "ingest     build the index in data/index from data/raw"
+	@echo "serve      run the API + chat UI on http://localhost:8000"
+	@echo "test       run the offline test suite"
+	@echo "smoke      end-to-end check with real local models, no keys"
+	@echo "eval       retrieval ablation over data/golden/qa.jsonl"
+	@echo "calibrate  sweep the refusal threshold"
 
 install:
-	pip install -r requirements.txt && pip install -e .
+	pip install -r requirements-dev.txt && pip install -e . --no-deps
 
-ingest-sample:
-	python scripts/ingest_cli.py --sample
+fetch:
+	python scripts/fetch_circulars.py
+
+ingest:
+	python scripts/ingest_cli.py --reset
 
 serve:
-	uvicorn ragsys.api.app:app --reload --port 8000
+	uvicorn ragsys.api.app:app --port 8000
 
 test:
 	pytest -q
@@ -26,13 +29,10 @@ smoke:
 	python scripts/smoke_test.py
 
 eval:
-	python -m ragsys.eval.run_eval --dataset data/golden/qa.jsonl
+	python -m ragsys.eval.run_eval
 
-up:
-	docker compose up --build -d
+calibrate:
+	python -m ragsys.eval.calibrate
 
-down:
-	docker compose down
-
-fmt:
-	ruff check --fix src tests scripts || true
+lint:
+	ruff check src tests scripts

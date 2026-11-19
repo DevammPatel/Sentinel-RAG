@@ -1,0 +1,6 @@
+# Optional: RAGAS metrics for `python -m ragsys.eval.run_eval --mode full --ragas`.
+# Not needed to run the API, the tests, or the built-in eval metrics.
+-r requirements.txt
+ragas>=0.2
+langchain-openai>=0.2
+pandas>=2.2
