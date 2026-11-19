@@ -4,4 +4,4 @@ Provider-configurable (Anthropic / OpenAI), hybrid retrieval + reranking,
 RAGAS + custom eval harness, and OpenTelemetry/OpenInference tracing.
 """
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"

@@ -1,55 +1,17 @@
-"""Fetch SEBI / RBI circulars.
+"""A tiny built-in sample corpus for offline demos and tests.
 
-Two modes:
-  * `download_urls([...])`  -> download an explicit list of PDF URLs you supply.
-  * `sample_corpus()`       -> a tiny built-in text corpus of paraphrased,
-                               public-domain-style circular content so the whole
-                               pipeline (ingest -> retrieve -> eval) runs end to
-                               end with ZERO network access, keys, or scraping.
+The real corpus is the set of official SEBI / RBI documents listed in
+`data/sources.json`, downloaded by `scripts/fetch_circulars.py`. This sample
+exists so the whole pipeline (ingest -> retrieve -> answer) can be exercised
+with no network access at all, e.g. in CI or on a plane.
 
-We deliberately do NOT scrape sebi.gov.in / rbi.org.in automatically: their
-terms and rate limits vary. Point `download_urls` at PDFs you are permitted to
-fetch, or drop PDFs into data/pdfs/ and run the ingest CLI on the folder.
+The sample texts are paraphrased summaries written for this project. They are
+not the regulators' wording and must not be relied on.
 """
 from __future__ import annotations
 
 from pathlib import Path
 
-import httpx
-from tenacity import retry, stop_after_attempt, wait_exponential
-
-
-@retry(stop=stop_after_attempt(3), wait=wait_exponential(min=1, max=8))
-def _get(url: str) -> bytes:
-    headers = {"User-Agent": "ragsys-ingest/0.1 (+research)"}
-    with httpx.Client(timeout=30, follow_redirects=True, headers=headers) as client:
-        resp = client.get(url)
-        resp.raise_for_status()
-        return resp.content
-
-
-def download_urls(urls: list[str], dest: str | Path = "data/pdfs") -> list[Path]:
-    dest = Path(dest)
-    dest.mkdir(parents=True, exist_ok=True)
-    saved: list[Path] = []
-    for url in urls:
-        name = url.rstrip("/").split("/")[-1] or "circular"
-        if not name.lower().endswith(".pdf"):
-            name += ".pdf"
-        out = dest / name
-        try:
-            out.write_bytes(_get(url))
-            saved.append(out)
-            print(f"[sources] saved {url} -> {out}")
-        except Exception as exc:  # keep going on individual failures
-            print(f"[sources] FAILED {url}: {exc}")
-    return saved
-
-
-# ---------------------------------------------------------------------------
-# Offline sample corpus. Paraphrased summaries of well-known circular topics so
-# the demo is self-contained. Replace with real PDFs for production use.
-# ---------------------------------------------------------------------------
 SAMPLE_DOCS: list[dict] = [
     {
         "filename": "sebi_ria_2013.txt",
@@ -147,7 +109,7 @@ SAMPLE_DOCS: list[dict] = [
 ]
 
 
-def sample_corpus(dest: str | Path = "data/pdfs") -> list[Path]:
+def sample_corpus(dest: str | Path = "data/sample") -> list[Path]:
     """Write the offline sample corpus to disk and return the file paths."""
     dest = Path(dest)
     dest.mkdir(parents=True, exist_ok=True)

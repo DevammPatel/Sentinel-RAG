@@ -4,10 +4,11 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ragsys"
-version = "0.1.0"
-description = "Agentic RAG over SEBI/RBI circulars with eval harness and OpenTelemetry observability"
+version = "0.2.0"
+description = "Sentinel-RAG: agentic RAG over SEBI/RBI regulations with hybrid retrieval, reranking, guardrails, an eval harness and OpenTelemetry tracing"
 requires-python = ">=3.10"
 readme = "README.md"
+license = { text = "MIT" }
 dynamic = ["dependencies"]
 
 [tool.setuptools.dynamic]
@@ -16,12 +17,18 @@ dependencies = { file = ["requirements.txt"] }
 [tool.setuptools.packages.find]
 where = ["src"]
 
+[tool.setuptools.package-data]
+ragsys = ["api/static/*"]
+
 [tool.pytest.ini_options]
-pythonpath = ["src"]
-asyncio_mode = "auto"
+pythonpath = ["src", "tests"]
 testpaths = ["tests"]
 filterwarnings = ["ignore::DeprecationWarning"]
 
 [tool.ruff]
-line-length = 100
+line-length = 110
 target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+ignore = ["E501", "B905"]

@@ -1,5 +1,12 @@
 # Full local stack: API + pgvector + Arize Phoenix (tracing UI).
-# Swap the OTEL endpoint in .env to ship traces to LangSmith instead of Phoenix.
+#
+#   docker compose up --build -d
+#   open http://localhost:8000        # chat UI
+#   open http://localhost:6006        # traces
+#
+# The plain image serves from the in-memory index baked into it. This stack
+# switches the same image to Postgres + pgvector (seeded automatically from that
+# baked index on first start) and turns tracing on.
 services:
   db:
     image: pgvector/pgvector:pg16
@@ -7,8 +14,7 @@ services:
       POSTGRES_DB: ragsys
       POSTGRES_USER: ragsys
       POSTGRES_PASSWORD: ragsys
-    ports:
-      - "5432:5432"
+    # No published port: only the API talks to the database, over the compose network.
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
@@ -18,13 +24,22 @@ services:
       retries: 10
 
   phoenix:
-    image: arizephoenix/phoenix:latest
+    image: arizephoenix/phoenix:version-21.1.0
     ports:
-      - "6006:6006"   # UI + OTLP HTTP collector
+      - "127.0.0.1:6006:6006"   # UI + OTLP HTTP collector, reachable from this machine only
     environment:
       - PHOENIX_WORKING_DIR=/data
+      # Recent Phoenix releases require login by default and reject unauthenticated
+      # spans with a 401. This is a local, loopback-only instance, so auth is off.
+      - PHOENIX_ENABLE_AUTH=false
     volumes:
       - phoenixdata:/data
+    healthcheck:
+      # Phoenix takes ~15s to boot; spans sent before that are dropped.
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:6006/healthz', timeout=3)"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
 
   api:
     build: .
@@ -32,27 +47,23 @@ services:
       db:
         condition: service_healthy
       phoenix:
-        condition: service_started
+        condition: service_healthy
     environment:
-      PGHOST: db
-      PGPORT: 5432
-      PGDATABASE: ragsys
-      PGUSER: ragsys
-      PGPASSWORD: ragsys
+      PORT: "8000"
+      VECTOR_BACKEND: pgvector
+      DATABASE_URL: postgresql://ragsys:ragsys@db:5432/ragsys
       TRACING_ENABLED: "true"
       OTEL_EXPORTER_OTLP_ENDPOINT: http://phoenix:6006/v1/traces
-      OTEL_SERVICE_NAME: agentic-rag
-      LLM_PROVIDER: ${LLM_PROVIDER:-anthropic}
-      EMBEDDINGS_PROVIDER: ${EMBEDDINGS_PROVIDER:-local}
-      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      OTEL_SERVICE_NAME: sentinel-rag
+      LLM_PROVIDER: ${LLM_PROVIDER:-groq}
+      GROQ_API_KEY: ${GROQ_API_KEY:-}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
       OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      ADMIN_TOKEN: ${ADMIN_TOKEN:-}
     ports:
       - "8000:8000"
-    volumes:
-      - ./data:/app/data
-      - models:/models
 
 volumes:
   pgdata:
   phoenixdata:
-  models:

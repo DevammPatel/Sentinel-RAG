@@ -13,7 +13,8 @@ TRACING_ENABLED=false) everything degrades to cheap no-ops so the app still runs
 from __future__ import annotations
 
 import contextlib
-from typing import Any, Iterator
+from collections.abc import Iterator
+from typing import Any
 
 from ragsys.config import settings
 
@@ -44,12 +45,12 @@ def init_tracing() -> None:
 
     try:
         from opentelemetry import trace
-        from opentelemetry.sdk.resources import Resource
-        from opentelemetry.sdk.trace import TracerProvider
-        from opentelemetry.sdk.trace.export import BatchSpanProcessor
         from opentelemetry.exporter.otlp.proto.http.trace_exporter import (
             OTLPSpanExporter,
         )
+        from opentelemetry.sdk.resources import Resource
+        from opentelemetry.sdk.trace import TracerProvider
+        from opentelemetry.sdk.trace.export import BatchSpanProcessor
     except Exception as exc:  # pragma: no cover - optional dep
         print(f"[telemetry] OTEL libs unavailable, tracing disabled: {exc}")
         return
@@ -58,7 +59,11 @@ def init_tracing() -> None:
     if settings.langsmith_api_key and "x-api-key" not in headers:
         headers["x-api-key"] = settings.langsmith_api_key
 
-    resource = Resource.create({"service.name": settings.otel_service_name})
+    resource = Resource.create({
+        "service.name": settings.otel_service_name,
+        # Phoenix files traces under this project name instead of "default".
+        "openinference.project.name": settings.otel_service_name,
+    })
     provider = TracerProvider(resource=resource)
     exporter = OTLPSpanExporter(
         endpoint=settings.otel_exporter_otlp_endpoint,

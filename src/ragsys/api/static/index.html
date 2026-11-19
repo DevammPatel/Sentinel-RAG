@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sentinel-RAG | Ask the SEBI and RBI rulebook</title>
+<meta name="description" content="Ask questions about official SEBI and RBI regulations and get answers with citations to the source passage.">
+<style>
+  :root {
+    --bg: #f6f4ee; --surface: #ffffff; --surface-2: #efece3; --ink: #18212b; --muted: #5d6875;
+    --line: #dcd7ca; --accent: #0a6464; --accent-ink: #ffffff; --accent-soft: #dcefec;
+    --sebi: #1f4e9c; --rbi: #8a3324; --warn-bg: #fdf1d6; --warn-ink: #6b4a00;
+    --stop-bg: #fbe4e1; --stop-ink: #8f1d12; --ok-bg: #dcefe2; --ok-ink: #14532d;
+    --radius: 10px; --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #11161c; --surface: #19212a; --surface-2: #212b36; --ink: #e8ecf0; --muted: #9aa6b2;
+      --line: #2f3b47; --accent: #4fc3bd; --accent-ink: #062524; --accent-soft: #173a3a;
+      --sebi: #8db4ff; --rbi: #f0a08f; --warn-bg: #3a2f10; --warn-ink: #f3d68a;
+      --stop-bg: #40201c; --stop-ink: #f5b3aa; --ok-bg: #173524; --ok-ink: #9fe0b5;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--bg); color: var(--ink);
+    font: 16px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  a { color: var(--accent); }
+  button { font: inherit; color: inherit; cursor: pointer; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  header.top {
+    display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 16px;
+    padding: 18px 16px 14px; max-width: 1180px; margin: 0 auto;
+  }
+  header.top h1 { font-size: 1.25rem; margin: 0; letter-spacing: -0.01em; }
+  header.top h1 span { color: var(--accent); }
+  header.top p { margin: 0; color: var(--muted); font-size: 0.92rem; flex: 1 1 280px; }
+  .linkbtn { background: none; border: 0; padding: 0; color: var(--accent); text-decoration: underline; font-size: 0.92rem; }
+
+  main { max-width: 1180px; margin: 0 auto; padding: 0 16px 40px; display: grid; gap: 20px; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); align-items: start; }
+  @media (max-width: 860px) { main { grid-template-columns: minmax(0, 1fr); } }
+
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; }
+  .label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin: 0 0 8px; font-weight: 600; }
+
+  form.ask textarea {
+    width: 100%; min-height: 76px; resize: vertical; padding: 12px; border-radius: 8px;
+    border: 1px solid var(--line); background: var(--bg); color: var(--ink); font: inherit;
+  }
+  .ask-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 10px; }
+  .count { font-size: 0.82rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .primary { background: var(--accent); color: var(--accent-ink); border: 0; border-radius: 8px; padding: 10px 20px; font-weight: 600; }
+  .primary:disabled { opacity: 0.55; cursor: progress; }
+  .examples { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+  .chip { background: var(--surface-2); border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; font-size: 0.85rem; text-align: left; }
+  .chip:hover { border-color: var(--accent); }
+
+  #result { margin-top: 20px; }
+  .badges { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+  .badge { font-size: 0.78rem; font-weight: 600; padding: 3px 10px; border-radius: 999px; background: var(--surface-2); }
+  .badge.generated { background: var(--ok-bg); color: var(--ok-ink); }
+  .badge.extractive { background: var(--warn-bg); color: var(--warn-ink); }
+  .badge.refused { background: var(--stop-bg); color: var(--stop-ink); }
+  .notice { background: var(--warn-bg); color: var(--warn-ink); border-radius: 8px; padding: 10px 12px; font-size: 0.9rem; margin-bottom: 12px; }
+  .error { background: var(--stop-bg); color: var(--stop-ink); border-radius: 8px; padding: 12px; }
+  .answer p { margin: 0 0 10px; }
+  .answer ul { margin: 0 0 10px; padding-left: 20px; }
+  .answer li { margin-bottom: 6px; }
+  .cite {
+    display: inline-block; min-width: 22px; padding: 0 5px; margin: 0 1px; border-radius: 5px; border: 0;
+    background: var(--accent-soft); color: var(--accent); font-size: 0.78rem; font-weight: 700; line-height: 1.5; vertical-align: 1px;
+  }
+  .cite:hover { background: var(--accent); color: var(--accent-ink); }
+  .stats { display: flex; flex-wrap: wrap; gap: 6px 18px; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line); font-size: 0.82rem; color: var(--muted); }
+  .stats b { color: var(--ink); font-variant-numeric: tabular-nums; font-weight: 600; }
+  .rewrite { font-size: 0.85rem; color: var(--muted); margin-top: 10px; }
+  .rewrite code { font-family: var(--mono); font-size: 0.82rem; color: var(--ink); }
+
+  .sources { display: grid; gap: 12px; }
+  .source { border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; background: var(--surface); scroll-margin-top: 16px; }
+  .source.flash { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+  .source.uncited { opacity: 0.72; }
+  .source-head { display: flex; gap: 10px; align-items: flex-start; }
+  .marker { flex: none; font-weight: 700; font-size: 0.82rem; color: var(--accent); background: var(--accent-soft); border-radius: 5px; padding: 1px 7px; }
+  .source-title { font-weight: 600; font-size: 0.93rem; line-height: 1.35; overflow-wrap: anywhere; }
+  .source-meta { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; margin: 8px 0; font-size: 0.78rem; color: var(--muted); }
+  .reg { font-weight: 700; letter-spacing: 0.04em; }
+  .reg.SEBI { color: var(--sebi); } .reg.RBI { color: var(--rbi); }
+  .ref { font-family: var(--mono); font-size: 0.74rem; overflow-wrap: anywhere; }
+  .meter { flex: 1 1 90px; max-width: 150px; height: 6px; background: var(--surface-2); border-radius: 3px; overflow: hidden; }
+  .meter i { display: block; height: 100%; background: var(--accent); }
+  .passage { font-size: 0.88rem; color: var(--ink); white-space: pre-wrap; overflow-wrap: anywhere; margin: 0; max-height: 9.3em; overflow: hidden; }
+  .passage.open { max-height: none; }
+  .more { margin-top: 6px; }
+  .empty { color: var(--muted); font-size: 0.92rem; }
+
+  dialog { border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); color: var(--ink); width: min(760px, calc(100vw - 32px)); max-height: 82vh; padding: 0; }
+  dialog::backdrop { background: rgba(0, 0, 0, 0.45); }
+  .dlg-head { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; border-bottom: 1px solid var(--line); position: sticky; top: 0; background: var(--surface); }
+  .dlg-head h2 { font-size: 1.05rem; margin: 0; }
+  .dlg-body { padding: 6px 18px 18px; }
+  .doc { padding: 10px 0; border-bottom: 1px solid var(--line); font-size: 0.9rem; }
+  .doc:last-child { border-bottom: 0; }
+  footer { max-width: 1180px; margin: 0 auto; padding: 0 16px 32px; color: var(--muted); font-size: 0.82rem; }
+  .spin { display: inline-block; width: 14px; height: 14px; border: 2px solid var(--line); border-top-color: var(--accent); border-radius: 50%; animation: r 0.8s linear infinite; vertical-align: -2px; margin-right: 8px; }
+  @keyframes r { to { transform: rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) { .spin { animation: none; } }
+</style>
+</head>
+<body>
+<header class="top">
+  <h1><span>Sentinel</span>-RAG</h1>
+  <p id="tagline">Ask the SEBI and RBI rulebook. Every answer cites the passage it came from.</p>
+  <button class="linkbtn" id="corpus-btn" type="button">What's indexed?</button>
+</header>
+
+<main>
+  <section>
+    <div class="card">
+      <form class="ask" id="ask">
+        <label class="label" for="q">Your question</label>
+        <textarea id="q" name="q" placeholder="e.g. How quickly must a bank close a credit card after I ask?" required></textarea>
+        <div class="ask-row">
+          <span class="count" id="count" aria-live="polite"></span>
+          <button class="primary" id="go" type="submit">Ask</button>
+        </div>
+      </form>
+      <div class="examples" id="examples" aria-label="Example questions"></div>
+    </div>
+
+    <div id="result" aria-live="polite"></div>
+  </section>
+
+  <aside>
+    <p class="label">Retrieved passages</p>
+    <div class="sources" id="sources">
+      <p class="empty">The passages the answer is built from will appear here, ranked by relevance, with a link to the official document.</p>
+    </div>
+  </aside>
+</main>
+
+<footer>
+  Educational portfolio project. Not legal or compliance advice: always verify against the official SEBI and RBI documents linked from each passage.
+</footer>
+
+<dialog id="corpus">
+  <div class="dlg-head">
+    <h2 id="corpus-title">Indexed documents</h2>
+    <button class="linkbtn" type="button" id="corpus-close">Close</button>
+  </div>
+  <div class="dlg-body" id="corpus-body"></div>
+</dialog>
+
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const el = (tag, cls, text) => {
+    const n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text !== undefined) n.textContent = text;
+    return n;
+  };
+  const q = $("q"), go = $("go"), result = $("result"), sources = $("sources");
+  let maxChars = 1000;
+
+  const updateCount = () => {
+    $("count").textContent = `${q.value.length} / ${maxChars}`;
+    $("count").style.color = q.value.length > maxChars ? "var(--stop-ink)" : "";
+  };
+  q.addEventListener("input", updateCount);
+  q.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) $("ask").requestSubmit();
+  });
+
+  // ---- corpus + examples -------------------------------------------------
+  fetch("/meta").then((r) => r.json()).then((m) => {
+    maxChars = m.max_question_chars || maxChars;
+    updateCount();
+    $("tagline").textContent =
+      `Ask ${m.document_count} official SEBI and RBI documents (${m.chunk_count.toLocaleString()} passages). ` +
+      `Every answer cites the passage it came from.`;
+    for (const text of m.examples) {
+      const b = el("button", "chip", text);
+      b.type = "button";
+      b.addEventListener("click", () => { q.value = text; updateCount(); $("ask").requestSubmit(); });
+      $("examples").append(b);
+    }
+    $("corpus-title").textContent = `Indexed documents (${m.document_count})`;
+    for (const d of m.documents) {
+      const row = el("div", "doc");
+      const reg = el("span", `reg ${d.source}`, d.source);
+      row.append(reg, document.createTextNode("  "));
+      if (d.url) {
+        const a = el("a", "", d.title);
+        a.href = d.url; a.target = "_blank"; a.rel = "noopener noreferrer";
+        row.append(a);
+      } else row.append(document.createTextNode(d.title));
+      row.append(el("div", "source-meta", `${d.circular_no || "no reference number"} · ${d.chunks} passages`));
+      $("corpus-body").append(row);
+    }
+  }).catch(() => {});
+  $("corpus-btn").addEventListener("click", () => $("corpus").showModal());
+  $("corpus-close").addEventListener("click", () => $("corpus").close());
+
+  // ---- rendering ---------------------------------------------------------
+  // The answer is model output, so it is only ever inserted as text nodes.
+  function inline(parent, text) {
+    for (const part of text.split(/(\[\d+\]|\*\*[^*]+\*\*)/)) {
+      if (!part) continue;
+      const cite = part.match(/^\[(\d+)\]$/);
+      if (cite) {
+        const b = el("button", "cite", cite[1]);
+        b.type = "button";
+        b.setAttribute("aria-label", `Show source ${cite[1]}`);
+        b.addEventListener("click", () => focusSource(cite[1]));
+        parent.append(b);
+      } else if (part.startsWith("**") && part.endsWith("**")) {
+        parent.append(el("strong", "", part.slice(2, -2)));
+      } else parent.append(document.createTextNode(part));
+    }
+  }
+  function renderAnswer(text) {
+    const box = el("div", "answer");
+    let list = null;
+    for (const raw of text.split("\n")) {
+      const line = raw.trim();
+      if (!line) { list = null; continue; }
+      const bullet = line.match(/^(?:[-*•]|\d+[.)])\s+(.*)$/);
+      if (bullet) {
+        if (!list) { list = el("ul"); box.append(list); }
+        const li = el("li"); inline(li, bullet[1]); list.append(li);
+      } else {
+        list = null;
+        const p = el("p"); inline(p, line); box.append(p);
+      }
+    }
+    return box;
+  }
+  function focusSource(n) {
+    const card = document.querySelector(`[data-marker="${n}"]`);
+    if (!card) return;
+    card.scrollIntoView({ behavior: "smooth", block: "center" });
+    card.classList.add("flash");
+    setTimeout(() => card.classList.remove("flash"), 1600);
+  }
+  function renderSources(list) {
+    sources.replaceChildren();
+    if (!list.length) {
+      sources.append(el("p", "empty", "No passages were retrieved for this question."));
+      return;
+    }
+    for (const s of list) {
+      const n = s.marker.replace(/[\[\]]/g, "");
+      const card = el("article", "source" + (s.cited ? "" : " uncited"));
+      card.dataset.marker = n;
+      const head = el("div", "source-head");
+      head.append(el("span", "marker", n));
+      const title = el("div", "source-title");
+      if (s.url) {
+        const a = el("a", "", s.title);
+        a.href = s.url; a.target = "_blank"; a.rel = "noopener noreferrer";
+        title.append(a);
+      } else title.textContent = s.title;
+      head.append(title);
+      const meta = el("div", "source-meta");
+      meta.append(el("span", `reg ${s.source}`, s.source));
+      if (s.circular_no) meta.append(el("span", "ref", s.circular_no));
+      const meter = el("span", "meter"); const fill = el("i");
+      fill.style.width = `${Math.round(s.relevance * 100)}%`; meter.append(fill);
+      meter.title = "Relevance to your question";
+      meta.append(meter, el("span", "", `${Math.round(s.relevance * 100)}% relevant`));
+      if (s.cited) meta.append(el("span", "", "· cited"));
+      const passage = el("p", "passage", s.text);
+      const more = el("button", "linkbtn more", "Show full passage");
+      more.type = "button";
+      more.addEventListener("click", () => {
+        const open = passage.classList.toggle("open");
+        more.textContent = open ? "Show less" : "Show full passage";
+      });
+      card.append(head, meta, passage, more);
+      sources.append(card);
+    }
+  }
+  const MODE_LABEL = { generated: "Generated answer", extractive: "Quoted from sources", refused: "Declined to answer" };
+  function renderResult(d) {
+    const card = el("div", "card");
+    const badges = el("div", "badges");
+    badges.append(el("span", `badge ${d.mode}`, MODE_LABEL[d.mode] || d.mode));
+    if (d.mode === "generated") badges.append(el("span", "badge", d.model));
+    card.append(badges);
+    if (d.notice) card.append(el("div", "notice", d.notice));
+    card.append(renderAnswer(d.answer));
+    if (d.mode === "refused" && d.sources.length) {
+      card.append(el("p", "rewrite", "The closest passages found are shown alongside, but none was relevant enough to answer from."));
+    }
+    if (d.rewritten_query) {
+      const r = el("p", "rewrite", "First search was weak, so the query was rewritten to: ");
+      r.append(el("code", "", d.rewritten_query));
+      card.append(r);
+    }
+    const stats = el("div", "stats");
+    const stat = (label, value) => { const s = el("span", "", label + " "); s.append(el("b", "", value)); stats.append(s); };
+    stat("Total", `${Math.round(d.latency_ms)} ms`);
+    stat("Retrieve + rerank", `${Math.round(d.retrieval_ms)} ms`);
+    stat("Generate", `${Math.round(d.generation_ms)} ms`);
+    stat("Sources cited", `${d.citations.length} of ${d.sources.length}`);
+    if (d.trace_id) stat("Trace", d.trace_id.slice(0, 12));
+    card.append(stats);
+    result.replaceChildren(card);
+    renderSources(d.sources);
+    // On a phone the answer lands below the example questions; bring it into view.
+    if (window.matchMedia("(max-width: 860px)").matches) {
+      card.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }
+  function renderError(message) {
+    result.replaceChildren(el("div", "error", message));
+  }
+
+  // ---- ask ---------------------------------------------------------------
+  $("ask").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const question = q.value.trim();
+    if (!question) return;
+    if (question.length > maxChars) { renderError(`Please keep the question under ${maxChars} characters.`); return; }
+    go.disabled = true;
+    const wait = el("div", "card");
+    wait.append(el("span", "spin"), document.createTextNode("Searching the documents and reranking passages…"));
+    result.replaceChildren(wait);
+    try {
+      const resp = await fetch("/query", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ question }),
+      });
+      const body = await resp.json().catch(() => ({}));
+      if (!resp.ok) {
+        const detail = typeof body.detail === "string" ? body.detail : "The request could not be processed.";
+        renderError(resp.status === 429 ? detail : `Something went wrong (${resp.status}). ${detail}`);
+        return;
+      }
+      renderResult(body);
+    } catch (err) {
+      renderError("Could not reach the server. Check your connection and try again.");
+    } finally {
+      go.disabled = false;
+    }
+  });
+  updateCount();
+
+  // A link like /?q=your+question opens with that question already asked.
+  const shared = new URLSearchParams(location.search).get("q");
+  if (shared) { q.value = shared.slice(0, 4000); updateCount(); $("ask").requestSubmit(); }
+})();
+</script>
+</body>
+</html>
