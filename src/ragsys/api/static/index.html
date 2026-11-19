@@ -144,6 +144,7 @@
 
 <footer>
   Educational portfolio project. Not legal or compliance advice: always verify against the official SEBI and RBI documents linked from each passage.
+  <span id="provider-note"></span>
 </footer>
 
 <dialog id="corpus">
@@ -187,6 +188,10 @@
       b.type = "button";
       b.addEventListener("click", () => { q.value = text; updateCount(); $("ask").requestSubmit(); });
       $("examples").append(b);
+    }
+    if (m.llm_provider_name) {
+      $("provider-note").textContent =
+        `Questions are sent to ${m.llm_provider_name} to write the answer, so please don't include personal information.`;
     }
     $("corpus-title").textContent = `Indexed documents (${m.document_count})`;
     for (const d of m.documents) {

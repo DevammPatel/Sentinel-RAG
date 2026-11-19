@@ -95,6 +95,13 @@ with st.sidebar:
         "Educational portfolio project. Not legal or compliance advice: always verify "
         "against the official SEBI and RBI documents linked from each passage."
     )
+    from ragsys.config import settings
+
+    if settings.llm_available():
+        provider = {"gemini": "Google Gemini", "groq": "Groq", "openai": "OpenAI",
+                    "anthropic": "Anthropic"}.get(settings.llm_provider, settings.llm_provider)
+        st.caption(f"Questions are sent to {provider} to write the answer, so please "
+                   "don't include personal information.")
 
 with st.form("ask"):
     question = st.text_area("Your question", key="question", max_chars=1000, height=90)

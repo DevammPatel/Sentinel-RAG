@@ -187,3 +187,124 @@ def test_anthropic_rate_limit_becomes_llm_error(monkeypatch):
     with pytest.raises(LLMError) as exc:
         _anthropic_provider(monkeypatch, handler).complete("s", "u")
     assert exc.value.kind == "rate_limited"
+
+
+def test_gemini_gets_low_reasoning_and_room_for_thinking(monkeypatch):
+    """Gemini 3+ always thinks; a tiny cap (like the 120-token rewrite call)
+    could be spent entirely on thinking and return nothing."""
+    seen = {}
+
+    def handler(request):
+        seen["body"] = json.loads(request.content)
+        return httpx.Response(200, json=_chat_completion(model="gemini"))
+
+    _openai_provider(monkeypatch, handler, name="gemini").complete("s", "u", max_tokens=120)
+    assert seen["body"]["reasoning_effort"] == "low"
+    assert seen["body"]["max_tokens"] >= settings.gemini_min_output_tokens
+
+
+def test_reasoning_effort_is_not_sent_to_other_providers(monkeypatch):
+    seen = {}
+
+    def handler(request):
+        seen["body"] = json.loads(request.content)
+        return httpx.Response(200, json=_chat_completion())
+
+    _openai_provider(monkeypatch, handler, name="groq").complete("s", "u", max_tokens=120)
+    assert "reasoning_effort" not in seen["body"] and seen["body"]["max_tokens"] == 120
+
+
+def test_empty_answer_is_an_llm_error_not_a_blank_reply(monkeypatch):
+    def handler(request):
+        body = _chat_completion(text="")
+        body["choices"][0]["finish_reason"] = "length"
+        return httpx.Response(200, json=body)
+
+    with pytest.raises(LLMError, match="empty answer"):
+        _openai_provider(monkeypatch, handler, name="gemini").complete("s", "u")
+
+
+def test_anthropic_empty_answer_is_an_llm_error(monkeypatch):
+    import httpx2
+
+    def handler(request):
+        return httpx2.Response(200, json=_message(stop_reason="max_tokens", content=[
+            {"type": "thinking", "thinking": "", "signature": "sig"}]))
+
+    with pytest.raises(LLMError, match="empty answer"):
+        _anthropic_provider(monkeypatch, handler).complete("s", "u")
+
+
+# ---- fallback models and cool-down -----------------------------------------
+def _gemini_with_fallback(monkeypatch, handler):
+    monkeypatch.setattr(settings, "gemini_model", "primary")
+    monkeypatch.setattr(settings, "gemini_fallback_models", "backup")
+    return _openai_provider(monkeypatch, handler, name="gemini")
+
+
+def test_overloaded_model_falls_back_to_the_next_one(monkeypatch):
+    calls = []
+
+    def handler(request):
+        model = json.loads(request.content)["model"]
+        calls.append(model)
+        if model == "primary":
+            return httpx.Response(503, json={"error": {"message": "overloaded"}})
+        return httpx.Response(200, json=_chat_completion(text="From backup [1].", model=model))
+
+    provider = _gemini_with_fallback(monkeypatch, handler)
+    assert provider.models == ["primary", "backup"]
+    result = provider.complete("s", "u")
+    assert (result.text, result.model) == ("From backup [1].", "backup")
+    assert calls == ["primary", "backup"]
+
+    # The failed model is skipped while it cools down: no second wait on it.
+    provider.complete("s", "u")
+    assert calls == ["primary", "backup", "backup"]
+
+
+def test_cool_down_expires(monkeypatch):
+    import ragsys.llm.provider as prov
+
+    calls = []
+
+    def handler(request):
+        model = json.loads(request.content)["model"]
+        calls.append(model)
+        if model == "primary" and calls.count("primary") == 1:
+            return httpx.Response(429, json={"error": {"message": "slow down"}})
+        return httpx.Response(200, json=_chat_completion(model=model))
+
+    provider = _gemini_with_fallback(monkeypatch, handler)
+    provider.complete("s", "u")
+    now = prov.time.monotonic()
+    monkeypatch.setattr(prov.time, "monotonic", lambda: now + settings.llm_cooldown_s + 1)
+    assert provider.complete("s", "u").model == "primary"
+
+
+def test_every_model_cooling_down_fails_fast_as_unavailable(monkeypatch):
+    calls = []
+
+    def handler(request):
+        calls.append(1)
+        raise httpx.ReadTimeout("slow", request=request)
+
+    provider = _gemini_with_fallback(monkeypatch, handler)
+    with pytest.raises(LLMError) as first:
+        provider.complete("s", "u")
+    assert first.value.kind == "timeout" and len(calls) == 2
+    with pytest.raises(LLMError) as second:
+        provider.complete("s", "u")
+    assert second.value.kind == "unavailable" and len(calls) == 2  # no new requests
+
+
+def test_permanent_errors_do_not_fall_back(monkeypatch):
+    calls = []
+
+    def handler(request):
+        calls.append(json.loads(request.content)["model"])
+        return httpx.Response(401, json={"error": {"message": "bad key"}})
+
+    with pytest.raises(LLMError) as exc:
+        _gemini_with_fallback(monkeypatch, handler).complete("s", "u")
+    assert exc.value.status == 401 and calls == ["primary"]  # same key would fail again

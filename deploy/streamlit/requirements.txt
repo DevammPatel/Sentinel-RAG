@@ -1,3 +1,13 @@
-# Streamlit Community Cloud installs from the requirements file next to the app.
--r ../../requirements.txt
+# Dependencies for the Streamlit Community Cloud deployment.
+#
+# Self-contained on purpose: Community Cloud installs this file (it sits next to
+# the entrypoint, so it wins over the root requirements.txt), and it only needs
+# what the in-process pipeline imports. No API server, Postgres or tracing.
 streamlit>=1.36
+pydantic>=2.6
+pydantic-settings>=2.2
+openai>=1.30          # Gemini and Groq through their OpenAI-compatible endpoints
+anthropic>=0.34
+fastembed>=0.4        # ONNX embeddings + reranker, no torch
+numpy>=1.26
+rank-bm25>=0.2.2

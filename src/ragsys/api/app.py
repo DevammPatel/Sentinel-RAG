@@ -95,6 +95,9 @@ async def unhandled(request: Request, exc: Exception) -> JSONResponse:
     return JSONResponse(status_code=500, content={"detail": "Internal error. Please try again."})
 
 
+_PROVIDER_NAMES = {"gemini": "Google Gemini", "groq": "Groq", "openai": "OpenAI", "anthropic": "Anthropic"}
+
+
 class IngestPathRequest(BaseModel):
     path: str
 
@@ -153,6 +156,7 @@ def meta() -> dict:
         "examples": EXAMPLE_QUESTIONS,
         "llm_configured": settings.llm_available(),
         "llm_model": settings.active_llm_model if settings.llm_available() else None,
+        "llm_provider_name": _PROVIDER_NAMES.get(settings.llm_provider) if settings.llm_available() else None,
         "max_question_chars": settings.max_input_chars,
     }
 

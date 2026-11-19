@@ -62,6 +62,13 @@ def test_meta_lists_documents_with_links(client):
     assert (doc["doc_id"], doc["source"], doc["url"]) == ("rbi-kyc", "RBI", "https://example.org/kyc")
     assert doc["chunks"] == body["chunk_count"]
     assert body["examples"] and body["max_question_chars"] == settings.max_input_chars
+    assert body["llm_provider_name"] is None  # no key configured in tests
+
+
+def test_meta_names_the_provider_questions_are_sent_to(client, monkeypatch):
+    monkeypatch.setattr(settings, "llm_provider", "gemini")
+    monkeypatch.setattr(settings, "gemini_api_key", "test-key")
+    assert client.get("/meta").json()["llm_provider_name"] == "Google Gemini"
 
 
 def test_query_returns_the_pipeline_answer(client, pipeline):

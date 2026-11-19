@@ -167,6 +167,7 @@ def run_full(dataset: list[dict], provider: str | None, pause_s: float = 0.0) ->
             "ground_truth": row.get("ground_truth", ""),
             "answer": resp.answer,
             "mode": resp.mode,
+            "model": resp.model,
             "refused": resp.refused,
             "contexts": resp.contexts,
             "latency_ms": resp.latency_ms,

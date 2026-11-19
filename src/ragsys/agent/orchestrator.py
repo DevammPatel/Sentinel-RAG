@@ -61,6 +61,7 @@ _NOTICES = {
     "not_configured": "No LLM key is configured, so this answer quotes the source passages directly.",
     "rate_limited": "The LLM provider's free quota is exhausted right now, so this answer quotes the source passages directly.",
     "timeout": "The LLM provider timed out, so this answer quotes the source passages directly.",
+    "unavailable": "The LLM provider is busy right now, so this answer quotes the source passages directly.",
     "refused": "The model declined to answer this question.",
     "error": "The LLM provider returned an error, so this answer quotes the source passages directly.",
 }
