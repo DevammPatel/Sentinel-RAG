@@ -107,7 +107,7 @@ def test_no_llm_key_degrades_to_extractive_answer(retriever):
 
 
 @pytest.mark.parametrize("kind, phrase", [("rate_limited", "quota"), ("timeout", "timed out"),
-                                          ("error", "returned an error")])
+                                          ("unavailable", "busy"), ("error", "returned an error")])
 def test_llm_failure_degrades_to_extractive_instead_of_500(retriever, llm, kind, phrase):
     llm.error = LLMError("boom", kind=kind)
     resp = AgenticRAG(retriever=retriever, reranker=ScriptedReranker({})).answer(QUESTION)
@@ -173,3 +173,36 @@ def test_extractive_answer_quotes_the_sentence_matching_the_question():
                             [RetrievedChunk(chunk=chunk, rerank_score=0.9)])
     assert "seven working days" in out.answer and "fee schedule" not in out.answer
     assert out.citations[0].marker == "[1]"
+
+
+
+@pytest.mark.parametrize("raw, expected", [
+    ("valid for three years [1, 2].", "valid for three years [1][2]."),
+    ("see [1,3] and [2-4]", "see [1][3] and [2][3][4]"),
+    ("both [1; 2] and [1 and 2]", "both [1][2] and [1][2]"),
+    ("already fine [1][2]", "already fine [1][2]"),
+    ("out of range [2, 9]", "out of range [2]"),
+    ("not a citation [2026, 2027]", "not a citation [2026, 2027]"),
+])
+def test_combined_citation_markers_are_split(raw, expected):
+    from ragsys.generation.generator import normalize_citations
+
+    assert normalize_citations(raw, n_sources=5) == expected
+
+
+def test_generator_marks_every_source_in_a_combined_marker_as_cited():
+    from ragsys.generation.generator import Generator
+    from ragsys.llm.provider import LLMResult
+
+    class FakeLLM:
+        def complete(self, system, user, max_tokens=None):
+            return LLMResult(text="Valid for three years [1, 2].", provider="gemini", model="m")
+
+    gen = Generator.__new__(Generator)
+    gen.llm = FakeLLM()
+    chunks = [RetrievedChunk(chunk=Chunk(chunk_id=f"c::{i}", doc_id=f"d{i}", title="T",
+                                         source="SEBI", text="x"), rerank_score=0.9)
+              for i in range(3)]
+    out = gen.generate("How long is it valid?", chunks)
+    assert out.answer == "Valid for three years [1][2]."
+    assert [c.marker for c in out.citations] == ["[1]", "[2]"]

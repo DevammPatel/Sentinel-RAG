@@ -70,6 +70,16 @@ KYC_DOC = Document(
 )
 
 
+@pytest.fixture(autouse=True)
+def _fresh_llm_cooldowns():
+    """Cool-downs are process-wide; don't let one test's failures leak into the next."""
+    from ragsys.llm.provider import reset_cooldowns
+
+    reset_cooldowns()
+    yield
+    reset_cooldowns()
+
+
 @pytest.fixture
 def embedder():
     return FakeEmbedder()

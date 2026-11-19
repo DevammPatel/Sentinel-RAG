@@ -25,7 +25,8 @@ SYSTEM_PROMPT = (
     "strictly:\n"
     "1. Answer ONLY using the numbered CONTEXT passages provided. Do not use outside "
     "knowledge.\n"
-    "2. Cite every factual claim with the bracketed source number, e.g. [1], [2].\n"
+    "2. Cite every factual claim with the bracketed source number, one number per "
+    "bracket, e.g. [1] or [1][2].\n"
     "3. If the context does not contain the answer, reply exactly: "
     f"\"{REFUSAL}\"\n"
     "4. Be precise about thresholds, dates and figures; quote them as written.\n"
@@ -41,6 +42,8 @@ REWRITE_PROMPT = (
     "or explanation."
 )
 
+# A bracket holding several source numbers: [1, 2], [1,3], [2-4], [1; 2], [1 and 2].
+_MULTI_CITE = re.compile(r"\[(\d+(?:\s*(?:,|;|-|–|and)\s*\d+)+)\]")
 _SENTENCE = re.compile(r"(?<=[.;?!])\s+(?=[A-Z(])")
 _MAX_QUOTE = 420
 _CLAUSE_MARKER = re.compile(r"^\s*(?:\d+(?:\.\d+)*[.)]?|\([a-z0-9]{1,4}\))\s+")
@@ -60,6 +63,28 @@ class GenerationOutput:
     model: str = ""
     input_tokens: int | None = None
     output_tokens: int | None = None
+
+
+def normalize_citations(text: str, n_sources: int) -> str:
+    """Rewrite combined markers like "[1, 2]" or "[2-4]" as "[1][2]" / "[2][3][4]".
+
+    Models don't always follow "one number per bracket", and the UI and the
+    citation bookkeeping both look for "[n]". Numbers outside 1..n_sources are
+    dropped rather than invented into links to sources that don't exist.
+    """
+    def expand(match: re.Match) -> str:
+        nums: list[int] = []
+        for part in re.split(r"\s*(?:,|;|and)\s*", match.group(1)):
+            bounds = re.split(r"\s*[-–]\s*", part)
+            if len(bounds) == 2 and bounds[0].isdigit() and bounds[1].isdigit():
+                lo, hi = int(bounds[0]), int(bounds[1])
+                nums.extend(range(lo, hi + 1) if 0 < hi - lo < 20 else [lo, hi])
+            elif part.isdigit():
+                nums.append(int(part))
+        valid = [n for n in dict.fromkeys(nums) if 1 <= n <= n_sources]
+        return "".join(f"[{n}]" for n in valid) if valid else match.group(0)
+
+    return _MULTI_CITE.sub(expand, text)
 
 
 def build_citations(chunks: list[RetrievedChunk]) -> list[Citation]:
@@ -170,9 +195,10 @@ class Generator:
             result = self.llm.complete(system, user)
 
         # Only keep citations the model actually used.
-        used = [c for c in citations if c.marker in result.text]
+        answer = normalize_citations(result.text, len(citations))
+        used = [c for c in citations if c.marker in answer]
         return GenerationOutput(
-            answer=result.text,
+            answer=answer,
             citations=used,
             provider=result.provider,
             model=result.model,

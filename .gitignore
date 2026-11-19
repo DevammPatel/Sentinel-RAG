@@ -18,3 +18,7 @@ data/pdfs/
 
 # Local tooling
 .claude/
+
+# Streamlit secrets
+.streamlit/secrets.toml
+secrets.toml

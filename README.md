@@ -16,7 +16,7 @@ read in an afternoon:
 - **An evaluation harness** with a golden set, a retrieval ablation and threshold calibration. The numbers below come from it.
 - **Tracing** with OpenTelemetry, using OpenInference attribute names so Phoenix renders each question as a trace tree.
 - **A hardened public API**: rate limits, no write endpoints unless an admin token is set, clean error responses.
-- **Free to run**: Groq and Gemini free tiers for generation, local models for everything else.
+- **Free to run**: Gemini's free tier (or Groq's) for generation, local models for everything else.
 
 ## Results
 
@@ -52,12 +52,23 @@ What this shows:
   BM25 is weak on paraphrased questions. Only the combination is strong on
   both, which is what lets the reranker reach 100% in the top five.
 
-### Refusals and end-to-end
+### End to end, with generated answers (all 62 questions)
+
+The whole agent, with `gemini-3.5-flash-lite` (free tier) writing the answers:
 
 | | |
 |---|---|
-| Refusal decisions correct | 62 of 62 at the calibrated threshold |
-| Answers carrying a citation | 50 of 50 |
+| Out-of-scope questions refused | 12 of 12 |
+| Answerable questions answered (none wrongly refused) | 50 of 50 |
+| Answers citing their sources | 50 of 50 |
+| Answers an LLM judge found fully supported by the cited passages | 50 of 50 |
+| Content words of the reference answer present in the answer | 86% |
+| Time per question | 1.8 s mean, 3.0 s p95 (0.6 s retrieval + 1.1 s generation) |
+
+Retrieval alone, with no LLM:
+
+| | |
+|---|---|
 | Latency, native (8 cores) | 0.30 s mean, 0.36 s p95 |
 | Latency, container limited to 2 CPUs | 1.05 s mean, 1.24 s p95 |
 
@@ -69,12 +80,17 @@ Read these with the right caveats:
 - The refusal threshold is fitted to this set. The lowest-scoring answerable
   question (0.42) and the highest-scoring out-of-scope one (0.36) are close, so
   a larger set would very likely show some errors.
-- The end-to-end run used extractive mode (no LLM key on the build machine).
-  **Generated answers have not been evaluated.** The harness supports it
-  (`--mode full` with a key adds an LLM-judged faithfulness score), and that is
-  the first thing to run after adding a key.
+- The judge is the same model that wrote the answers, so it is a lenient
+  check. In an earlier run it rejected one answer that, on reading the
+  passages myself, was correct; treat it as a smoke alarm, not a grade.
+- The 86% keyword figure is a lexical proxy. The misses I checked were
+  correct but shorter answers that left out a secondary detail.
+- That earlier run also found a real bug: the model sometimes wrote combined
+  citations like `[1, 2]`, which the app did not recognise. They are now
+  split into `[1][2]`, and the numbers above are from the run after the fix.
 
-Reports are in `data/eval/`. Reproduce with `make eval` and `make calibrate`.
+Reports are in `data/eval/`. Reproduce with `make eval`, `make calibrate`, and
+`python -m ragsys.eval.run_eval --mode full --pause 10` (needs a key).
 
 ## How it works
 
@@ -132,15 +148,17 @@ the app answers by quoting the most relevant passages. The first start
 downloads about 90 MB of model weights.
 
 ```bash
-make test             # 103 offline tests, no network or keys
+make test             # 120 offline tests, no network or keys
 make smoke            # real local models over a tiny sample corpus
 ```
 
 ### 2. Add a free LLM for generated answers
 
+Create a free Gemini key in Google AI Studio (no card needed), then:
+
 ```bash
 cp .env.example .env
-# set LLM_PROVIDER=groq and GROQ_API_KEY=...   (or gemini + GEMINI_API_KEY)
+# set GEMINI_API_KEY=...   (LLM_PROVIDER is already gemini)
 make serve
 ```
 
@@ -203,9 +221,13 @@ answers the question.
 for every golden question and sweeps the threshold. The default, 0.4, is the
 value that separates the two groups on this set.
 
-**Degrade, don't fail.** Free LLM tiers rate-limit hard. A missing key, a 429
-or a timeout turns into an extractive answer with a notice saying why. The demo
-keeps working when the quota runs out.
+**Degrade, don't fail.** Free LLM tiers fail in ordinary ways: rate limits,
+503 "overloaded", slow replies. When I first tested with Gemini, the newest
+Flash model timed out on the free tier while Flash-Lite answered in a second.
+So the provider tries a fallback model, a model that just failed is skipped
+for a minute (otherwise every visitor waits out the same timeout), and if
+nothing works the answer is quoted from the passages with a notice saying why.
+The demo keeps working when the quota runs out.
 
 **Sized for a small container.** Two findings from running the image under a
 2-CPU limit:
@@ -264,7 +286,7 @@ Everything is an environment variable. `.env.example` lists the common ones and
 
 | Variable | Default | |
 |---|---|---|
-| `LLM_PROVIDER` | `groq` | `groq`, `gemini`, `openai`, `anthropic` or `none`. |
+| `LLM_PROVIDER` | `gemini` | `gemini`, `groq`, `openai`, `anthropic` or `none`. |
 | `VECTOR_BACKEND` | `memory` | `memory` (files in `data/index`) or `pgvector`. |
 | `DATABASE_URL` | unset | Postgres URL for pgvector, for example a hosted free tier. |
 | `MIN_CONTEXT_SCORE` | `0.4` | The relevance gate. |
@@ -281,9 +303,12 @@ Cloud with no card. Hugging Face Docker Spaces now need a paid plan.
 
 ## Known limits
 
-- **Generation is untested against a live provider.** The Groq, Gemini and
-  Anthropic code paths are covered by tests that fake the HTTP layer (request
-  shape, error handling), not by real calls.
+- **Only Gemini has been tested live.** The Groq, OpenAI and Anthropic paths
+  are covered by tests that fake the HTTP layer (request shape, error
+  handling), not by real calls.
+- **Free-tier data use.** On Gemini's free tier, Google may use request content
+  to improve its products. The UI tells visitors their questions are sent to
+  Google.
 - **Single-turn.** Each question is answered on its own; there is no
   conversation memory.
 - **One process.** The rate limiter and the BM25 index live in memory, which is

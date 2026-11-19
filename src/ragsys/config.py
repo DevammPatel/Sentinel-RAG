@@ -26,14 +26,24 @@ class Settings(BaseSettings):
     )
 
     # ---- LLM provider ----
-    # "groq" and "gemini" have free tiers; "openai" and "anthropic" are paid.
+    # "gemini" and "groq" have free tiers; "openai" and "anthropic" are paid.
     # "none" (or a missing key) runs in extractive mode: no LLM call, the answer
     # is the best-matching passages quoted with citations.
-    llm_provider: LLMProviderName = "groq"
+    llm_provider: LLMProviderName = "gemini"
     groq_api_key: str | None = None
     groq_model: str = "llama-3.3-70b-versatile"
     gemini_api_key: str | None = None
-    gemini_model: str = "gemini-3.8-flash"
+    # Flash-Lite: free, and answered in about 1 s when gemini-3.8-flash was
+    # timing out on the free tier (tested 2026-11-19).
+    gemini_model: str = "gemini-3.5-flash-lite"
+    # Tried in order when the main model is rate limited, overloaded or slow.
+    # Free-tier quotas are per model, so a second model also adds headroom.
+    gemini_fallback_models: str = "gemini-3.1-flash-lite"
+    # Gemini 3+ models always think, and thinking tokens may count against the
+    # output cap. Keep thinking low and give each reply room, so short calls
+    # (query rewrite, judge) are not starved into an empty answer.
+    gemini_reasoning_effort: str | None = "low"
+    gemini_min_output_tokens: int = 4096
     openai_api_key: str | None = None
     openai_model: str = "gpt-4o-mini"
     openai_base_url: str | None = None  # any other OpenAI-compatible endpoint
@@ -42,8 +52,9 @@ class Settings(BaseSettings):
     anthropic_max_tokens: int = 16000
     llm_temperature: float = 0.0
     llm_max_tokens: int = 1024
-    llm_timeout_s: float = 30.0
-    llm_max_retries: int = 1
+    llm_timeout_s: float = 20.0      # per attempt, per model
+    llm_max_retries: int = 0         # fall back to the next model instead of retrying
+    llm_cooldown_s: float = 60.0     # skip a model this long after it fails
     # Use the LLM to rewrite a weak query before the second retrieval attempt.
     llm_query_rewrite: bool = True
 
@@ -136,6 +147,10 @@ class Settings(BaseSettings):
             "openai": self.openai_model,
             "anthropic": self.anthropic_model,
         }.get(provider, "extractive")
+
+    def fallback_models_for(self, provider: str) -> list[str]:
+        raw = self.gemini_fallback_models if provider == "gemini" else ""
+        return [m.strip() for m in raw.split(",") if m.strip()]
 
     def api_key_for(self, provider: str) -> str | None:
         return {

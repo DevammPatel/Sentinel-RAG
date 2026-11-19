@@ -55,7 +55,7 @@ services:
       TRACING_ENABLED: "true"
       OTEL_EXPORTER_OTLP_ENDPOINT: http://phoenix:6006/v1/traces
       OTEL_SERVICE_NAME: sentinel-rag
-      LLM_PROVIDER: ${LLM_PROVIDER:-groq}
+      LLM_PROVIDER: ${LLM_PROVIDER:-gemini}
       GROQ_API_KEY: ${GROQ_API_KEY:-}
       GEMINI_API_KEY: ${GEMINI_API_KEY:-}
       OPENAI_API_KEY: ${OPENAI_API_KEY:-}
